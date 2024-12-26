@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "esnext",
+    "target": "es6",
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "types": ["cypress","node"],
+    "sourceMap": true,
+    "allowJs": true,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "noResolve": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "resolveJsonModule": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "importsNotUsedAsValues": "preserve",
+    "incremental": true,
+    "rootDir": "./",
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": false,
+    "noImplicitAny": true,
+    "moduleDetection": "force",
+    "noUncheckedIndexedAccess": true,
+    "strict": true,
+    "noEmit": false,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@lib/*": ["lib/*"],
+      "@svg/*": ["shared/svg/*"],
+      "@src/*": ["./*"],
+      "@assets/*": ["../assets/*"]
+    }
+  },
+  "include": ["src/"],
+  "exclude": ["node_modules", "./dist"]
+}

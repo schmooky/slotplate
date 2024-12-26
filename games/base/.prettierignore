@@ -1,0 +1,18 @@
+## file extensions
+*.*
+!*.css
+!*.js
+!*.json
+!*.jsx
+!*.less
+!*.md
+!*.mdx
+!*.ts
+!*.yml
+
+
+## copied from .gitignore
+.vscode/
+dist/
+node_modules/
+.cache

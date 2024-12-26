@@ -1,0 +1,41 @@
+{
+  "name": "@slotplate/reels",
+  "version": "1.0.2",
+  "description": "reels",
+  "type": "module",
+  "files": [
+    "examples-PIXI7",
+    "examples-PIXI8",
+    "src",
+    "README.md",
+    "index.ts",
+    "index.d.ts",
+    "index.js",
+    "index.js.map",
+    "types.ts",
+    "types.d.ts",
+    "types.js",
+    "types.js.map"
+  ],
+  "exports": {
+    ".": "./index.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "prepublishOnly": "tsc --project tsconfig.lint.json",
+    "build": "tsc --project tsconfig.lint.json",
+    "lint": "eslint . --max-warnings=20 --fix",
+    "ci:lint": "eslint . --max-warnings=20"
+  },
+  "devDependencies": {
+    "@pixi-spine/all-4.1": "4.0.4",
+    "@esotericsoftware/spine-pixi-v8": "4.2.66",
+    "@pixi/react": "7.1.1",
+    "pixi.js": ">=7.4.2"
+  },
+  "peerDependencies": {
+    "pixi.js": ">=7.4.2"
+  }
+}
