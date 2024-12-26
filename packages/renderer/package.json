@@ -2,8 +2,8 @@
   "name": "@slotplate/renderer",
   "version": "0.0.8",
   "description": "TBD",
-  "main": "dist/index.js",
-  "type": "commonjs",
+  "main": "src/index.ts",
+  "type": "module",
   "files": [
     "dist"
   ],

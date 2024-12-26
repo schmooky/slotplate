@@ -5,7 +5,6 @@ import { Phase } from '@src/flow/types';
 import { StateMachineStore } from '@slotplate/engine/state-machine';
 import { DataStore } from '@src/stores/data/DataStore';
 import { GameBalanceStore } from '@src/stores/gameBalance/GameBalanceStore';
-import { modalStatus } from '@slotplate/react-components';
 import { BuyFeatureStore } from '@src/stores/buyFeature/buyFeatureStore';
 import { ErrorStore } from '@src/stores/error/ErrorStore';
 import { GameStatusStore } from '@src/stores/gameStatus/GameStatusStore';
@@ -26,8 +25,6 @@ class RootStore implements IRootStore {
   balanceStore = new GameBalanceStore();
 
   autoplayStore = new AutoplayDataStore();
-
-  modalStatusStore = modalStatus;
 
   statusStore = new StatusStore();
 

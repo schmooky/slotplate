@@ -1,4 +1,4 @@
-export const gameId = 'bang-bang';
+export const gameId = 'base';
 
 export const serverSymbols = ['A', 'B', 'C', 'D', 'E', 'K', 'L', 'M', 'N', 'R', 'S', 'Q', 'W', 'T'] as const;
 

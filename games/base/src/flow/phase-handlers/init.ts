@@ -3,7 +3,6 @@ import { assetsLoader } from '@lib/assetsLoader/assetsLoader';
 import { bundles } from '@assets/bundles';
 import { network } from '@lib/nework/nework';
 import { gameId } from '@lib/config/config';
-import { simpleLocalize } from '@lib/simpleLocalize/simpleLocalize';
 import { IRootStore } from '@src/stores/types';
 import { PhaseHandlerOptions } from '@slotplate/engine/state-machine';
 import { gameSound } from '@src/stores/sound/GameSound';

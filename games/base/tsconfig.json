@@ -39,7 +39,7 @@
       "@lib/*": ["lib/*"],
       "@svg/*": ["shared/svg/*"],
       "@src/*": ["./*"],
-      "@assets/*": ["../assets/*"]
+      "@assets/*": ["assets/*"]
     }
   },
   "include": ["src/"],

@@ -5,7 +5,7 @@ import generateFile from 'vite-plugin-generate-file';
 import checker from 'vite-plugin-checker';
 import pack from './package.json';
 
-const gameId = 'bang-bang';
+const gameId = 'base';
 
 export default defineConfig(async ({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -49,7 +49,7 @@ export default defineConfig(async ({ command, mode }) => {
         '@flow': fileURLToPath(new URL('./src/flow/', import.meta.url)),
         '@lib': fileURLToPath(new URL('./src/lib/', import.meta.url)),
         '@src': fileURLToPath(new URL('./src/', import.meta.url)),
-        '@assets': fileURLToPath(new URL('./assets/', import.meta.url)),
+        '@assets': fileURLToPath(new URL('./src/assets/', import.meta.url)),
       },
     },
   };

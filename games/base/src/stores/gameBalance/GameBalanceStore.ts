@@ -1,4 +1,4 @@
-import { BalanceStore } from '@slotplate/balance';
+import { BalanceStore } from '@slotplate/engine/balance';
 import { action, makeObservable, observable } from 'mobx';
 
 export class GameBalanceStore extends BalanceStore {
