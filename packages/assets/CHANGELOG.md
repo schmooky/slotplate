@@ -1,0 +1,1 @@
+# @slotplate/assetsLoader

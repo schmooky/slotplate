@@ -5,7 +5,7 @@ import { InterfaceSection } from '@src/reactComponents/reactModalWindows/rules/i
 import { BuyFeatureSection } from '@src/reactComponents/reactModalWindows/rules/buyFeature.section';
 import { AutoplaySection } from '@src/reactComponents/reactModalWindows/rules/autoplay.section';
 import { GameInfo } from '@src/reactComponents/reactModalWindows/rules/gameInfo.section';
-import { BaseRuleSection } from '@gambit/react-components';
+import { BaseRuleSection } from '@slotplate/react-components';
 import { simpleLocalize } from '@lib/simpleLocalize/simpleLocalize';
 import { FsSection } from '@src/reactComponents/reactModalWindows/rules/fsSection';
 import { PaylinesSection } from '@src/reactComponents/reactModalWindows/rules/paylines.section';

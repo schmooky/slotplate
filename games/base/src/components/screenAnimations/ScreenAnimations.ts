@@ -1,4 +1,4 @@
-import { resizeObject, SmartContainer } from '@gambit/game-renderer';
+import { resizeObject, SmartContainer } from '@slotplate/renderer';
 import { Spine } from '@esotericsoftware/spine-pixi-v8';
 import { eventEmitter, SCREEN_EVENTS } from '@lib/eventEmminer/events';
 

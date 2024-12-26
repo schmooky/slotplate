@@ -1,4 +1,4 @@
-import { SmartContainer } from '@gambit/game-renderer';
+import { SmartContainer } from '@slotplate/renderer';
 import { Spine, TrackEntry } from '@esotericsoftware/spine-pixi-v8';
 import { Button, ButtonContainer } from '@pixi/ui';
 import { eventEmitter, SPIN_BUTTON_EVENTS } from '@lib/eventEmminer/events';

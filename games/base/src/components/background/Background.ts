@@ -1,4 +1,4 @@
-import { resizeObject, SmartContainer } from '@gambit/game-renderer';
+import { resizeObject, SmartContainer } from '@slotplate/renderer';
 import { orientation } from '@lib/utils/orientation';
 import { Spine } from '@esotericsoftware/spine-pixi-v8';
 

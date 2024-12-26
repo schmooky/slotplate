@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { BaseRuleSection } from '@gambit/react-components';
+import { BaseRuleSection } from '@slotplate/react-components';
 import { simpleLocalize } from '@lib/simpleLocalize/simpleLocalize';
 
 export interface CustomSectionProperties {

@@ -1,7 +1,7 @@
 import { Container } from 'pixi.js';
 import { Scene } from '@lib/SceneManager';
 import { Background } from '@components/background/Background';
-import { resizeObject } from '@gambit/game-renderer';
+import { resizeObject } from '@slotplate/renderer';
 import { GameUI } from '@components/gameUI/GameUI';
 import { Reels } from '@components/reels/Reels';
 import { Announcers } from '@components/modal/announcers/Announcers';

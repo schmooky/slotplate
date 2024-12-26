@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { useResize } from '@gambit/react-components';
+import { useResize } from '@slotplate/react-components';
 import { simpleLocalize } from '@lib/simpleLocalize/simpleLocalize';
 import BuyIcon from '@src/reactComponents/reactModalWindows/rules/svg/rules/BuyIcon';
 import {

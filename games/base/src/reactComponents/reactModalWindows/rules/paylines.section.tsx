@@ -2,7 +2,7 @@ import { LandscapePaylineIcon } from '@src/reactComponents/reactModalWindows/rul
 import { PortraitPaylineIcon } from '@src/reactComponents/reactModalWindows/rules/portraitPaylineIcon';
 import { simpleLocalize } from '@lib/simpleLocalize/simpleLocalize';
 import React from 'react';
-import { useResize } from '@gambit/react-components';
+import { useResize } from '@slotplate/react-components';
 import { rootStore } from '@src/stores/RootStore';
 import {
   PanelH2,

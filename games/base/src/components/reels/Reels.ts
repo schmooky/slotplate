@@ -1,4 +1,4 @@
-import { resizeObject, SmartContainer } from '@gambit/game-renderer';
+import { resizeObject, SmartContainer } from '@slotplate/renderer';
 import { Spine, TrackEntry } from '@esotericsoftware/spine-pixi-v8';
 import { BitmapText, Container, FederatedPointerEvent, Rectangle } from 'pixi.js';
 import { rootStore } from '@src/stores/RootStore';

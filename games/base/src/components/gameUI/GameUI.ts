@@ -1,4 +1,4 @@
-import { SmartContainer } from '@gambit/game-renderer';
+import { SmartContainer } from '@slotplate/renderer';
 import { Assets } from 'pixi.js';
 import { SpinButton } from '@components/buttons/spinButton/SpinButton';
 import { BuyButton } from '@components/buttons/buyButton/BuyButton';
@@ -10,8 +10,6 @@ import { gameSound } from '@src/stores/sound/GameSound';
 import { SoundKey } from '@lib/sounds/soundsKeys';
 import { gameSettingStore } from '@src/stores/gameSettings/GameSettingStore';
 import { SoundLoader } from '@lib/utils/soundLoader';
-import { UI } from '@gambit/ui-pixi';
-import { AnalyticsManager } from '@lib/analytics/analyticsManager';
 import { eventEmitter, SPIN_BUTTON_EVENTS } from '@lib/eventEmminer/events';
 
 export class GameUI extends UI {

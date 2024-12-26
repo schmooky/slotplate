@@ -2,7 +2,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { eventEmitter, POPUPS_EVENTS } from '@lib/eventEmminer/events';
 import { Hint } from '@components/hint/Hint';
 import gsap from 'gsap';
-import { useResize } from '@gambit/react-components';
+import { useResize } from '@slotplate/react-components';
 import { simpleLocalize } from '@lib/simpleLocalize/simpleLocalize';
 import { rootStore } from '@src/stores/RootStore';
 import { HintStyleTypes } from '@components/modal/announcers/types';

@@ -1,5 +1,5 @@
 import { eventEmitter, POPUPS_EVENTS, STATE_MACHINE_EVENTS } from '@lib/eventEmminer/events';
-import { resizeObject, SmartContainer } from '@gambit/game-renderer';
+import { resizeObject, SmartContainer } from '@slotplate/renderer';
 import { BitmapText } from 'pixi.js';
 import { Spine, TrackEntry } from '@esotericsoftware/spine-pixi-v8';
 import gsap from 'gsap';

@@ -1,4 +1,4 @@
-import { TRANSLATION_KEY } from '@gambit/react-components';
+import { TRANSLATION_KEY } from '@slotplate/react-components';
 import { simpleLocalize } from '@lib/simpleLocalize/simpleLocalize';
 
 export const reactTranslation = (): Map<TRANSLATION_KEY, string> => {

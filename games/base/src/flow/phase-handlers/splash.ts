@@ -9,7 +9,7 @@ import { GameMode, GameSessionResponse } from '@lib/nework/types';
 import { RequestStatus } from '@slotplate/engine/network';
 import { PhaseHandlerOptions } from '@slotplate/engine/state-machine';
 import { IRootStore } from '@src/stores/types';
-import { TranslationService } from '@gambit/react-components';
+import { TranslationService } from '@slotplate/react-components';
 import { reactTranslation } from '@src/reactComponents/reactModalWindows/utils/reactUtils';
 import { gameSound } from '@src/stores/sound/GameSound';
 import { gameSettingStore } from '@src/stores/gameSettings/GameSettingStore';

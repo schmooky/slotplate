@@ -1,4 +1,4 @@
-import { resizeObject, SmartContainer } from '@gambit/game-renderer';
+import { resizeObject, SmartContainer } from '@slotplate/renderer';
 import { CircularProgressBar } from '@pixi/ui';
 
 export class SoundLoader extends SmartContainer {

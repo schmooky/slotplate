@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { rootStore } from '@src/stores/RootStore';
 import { gameRuleElements } from '@src/reactComponents/reactModalWindows/gameElements';
-import { modalStatus, ReactUI } from '@gambit/react-components';
+import { modalStatus, ReactUI } from '@slotplate/react-components';
 import { Paytable } from '@src/reactComponents/reactModalWindows/paytable/paytable';
 import { eventEmitter, STATE_MACHINE_EVENTS } from '@lib/eventEmminer/events';
 import { gameEventHandler } from '@lib/gameEventHandler/gameEventHandler';

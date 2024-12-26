@@ -1,4 +1,4 @@
-import { SimpleLocalize } from '@gambit/simple-localize';
+import { SimpleLocalize } from '@slotplate/simple-localize';
 
 declare const GAME_ENV: 'development' | 'production';
 declare const I18_BASE_URL: string;

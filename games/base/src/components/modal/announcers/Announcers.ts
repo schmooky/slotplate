@@ -1,5 +1,5 @@
 import { Spine, TrackEntry } from '@esotericsoftware/spine-pixi-v8';
-import { resizeObject, SmartContainer } from '@gambit/game-renderer';
+import { resizeObject, SmartContainer } from '@slotplate/renderer';
 import {
   eventEmitter,
   FREE_SPIN_EVENTS,
