@@ -7,7 +7,6 @@ import { DataStore } from '@src/stores/data/DataStore';
 import { GameBalanceStore } from '@src/stores/gameBalance/GameBalanceStore';
 import { BuyFeatureStore } from '@src/stores/buyFeature/buyFeatureStore';
 import { ErrorStore } from '@src/stores/error/ErrorStore';
-import { GameStatusStore } from '@src/stores/gameStatus/GameStatusStore';
 import { FreeRoundStore } from '@src/stores/freeRound/freeRoundStore';
 import { StatusStore } from '@src/stores/status/StatusStore';
 import { AutoplayDataStore } from '@src/stores/autoplay/AutoplayDataStore';
@@ -31,8 +30,6 @@ class RootStore implements IRootStore {
   buyFeatureStore = new BuyFeatureStore();
 
   errorStore: ErrorStore = new ErrorStore(this);
-
-  gameStatusStore = new GameStatusStore();
 
   freeRoundStore = new FreeRoundStore();
 

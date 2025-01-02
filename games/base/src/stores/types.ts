@@ -5,7 +5,6 @@ import { GameBalanceStore } from '@src/stores/gameBalance/GameBalanceStore';
 import { AutoplayStore } from '@slotplate/engine/autoplay';
 import { BuyFeatureStore } from '@src/stores/buyFeature/buyFeatureStore';
 import { ErrorStore } from '@src/stores/error/ErrorStore';
-import { GameStatusStore } from '@src/stores/gameStatus/GameStatusStore';
 import { FreeRoundStore } from '@src/stores/freeRound/freeRoundStore';
 import { StatusStore } from '@src/stores/status/StatusStore';
 
@@ -18,6 +17,5 @@ export interface IRootStore {
   statusStore: StatusStore;
   buyFeatureStore: BuyFeatureStore;
   errorStore: ErrorStore;
-  gameStatusStore: GameStatusStore;
   freeRoundStore: FreeRoundStore;
 }
