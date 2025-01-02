@@ -19,7 +19,7 @@ const viewPorts = {
 export const changeHtmlFontSize = (htmlElement: HTMLHtmlElement): void => {
   let portraitViewport;
   let landscapeViewport;
-  let htmlFsArr;
+  let htmlFsArray;
   let fontSize;
 
   const isPortrait = document.body.clientHeight > document.body.clientWidth;
@@ -28,7 +28,7 @@ export const changeHtmlFontSize = (htmlElement: HTMLHtmlElement): void => {
     !isPortrait &&
     (document.body.clientWidth < 600 || document.body.clientWidth / document.body.clientHeight > 3)
   ) {
-    fontSize = `10px`;
+    fontSize = '10px';
   } else {
     const isMobile = isPortrait
       ? document.body.clientWidth < (viewPorts.mobilePortrait[1] || 0)
@@ -41,15 +41,15 @@ export const changeHtmlFontSize = (htmlElement: HTMLHtmlElement): void => {
     if (isMobile) {
       portraitViewport = viewPorts.mobilePortrait;
       landscapeViewport = viewPorts.mobileLandscape;
-      htmlFsArr = htmlFs.mobile;
+      htmlFsArray = htmlFs.mobile;
     } else if (isTablet) {
       portraitViewport = viewPorts.tabletPortrait;
       landscapeViewport = viewPorts.tabletLandscape;
-      htmlFsArr = htmlFs.tablet;
+      htmlFsArray = htmlFs.tablet;
     } else {
       portraitViewport = viewPorts.desktopPortrait;
       landscapeViewport = viewPorts.desktopLandscape;
-      htmlFsArr = htmlFs.desktop;
+      htmlFsArray = htmlFs.desktop;
     }
 
     let minScreenSize = 0;
@@ -64,13 +64,13 @@ export const changeHtmlFontSize = (htmlElement: HTMLHtmlElement): void => {
     }
 
     fontSize = `${
-        (htmlFsArr[0] || 0) +
+        (htmlFsArray[0] || 0) +
       Math.sin(
         (((document.body.clientWidth - minScreenSize) / (maxScreenSize - minScreenSize)) *
           Math.PI) /
           2,
       ) *
-        ((htmlFsArr[1] || 0) - (htmlFsArr[0] || 0))
+        ((htmlFsArray[1] || 0) - (htmlFsArray[0] || 0))
     }px`;
   }
 
