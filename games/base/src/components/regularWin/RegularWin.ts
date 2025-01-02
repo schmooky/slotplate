@@ -1,4 +1,4 @@
-import { CLONING_WILD_EVENTS, eventEmitter, POPUPS_EVENTS, STATE_MACHINE_EVENTS } from '@lib/eventEmminer/events';
+import { CLONING_WILD_EVENTS, eventEmitter, POPUPS_EVENTS, STATE_MACHINE_EVENTS } from '@lib/events';
 import { BitmapText, Container } from 'pixi.js';
 import { Spine, TrackEntry } from '@esotericsoftware/spine-pixi-v8';
 import gsap from 'gsap';

@@ -1,10 +1,9 @@
 import { resizeObject, SmartContainer } from '@slotplate/renderer';
 import { BitmapText, Graphics, Text, TextStyle } from 'pixi.js';
 import { Spine, TrackEntry } from '@esotericsoftware/spine-pixi-v8';
-import { eventEmitter, POPUPS_EVENTS, STATE_MACHINE_EVENTS } from '@lib/eventEmminer/events';
+import { eventEmitter, POPUPS_EVENTS, STATE_MACHINE_EVENTS } from '@lib/events';
 import { rootStore } from '@src/stores/RootStore';
 import { ButtonConfig, buttonPositionConfig, buttonsConfig } from '@components/modal/buyFeature/buyFeatureConfig';
-import { network } from '@lib/nework/nework';
 import { BuyFeatureRequest, BuyFeatureResponse, GameMode } from '@lib/nework/types';
 import { RequestStatus } from '@slotplate/engine/network';
 import { gameSound } from '@src/stores/sound/GameSound';

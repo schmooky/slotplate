@@ -5,9 +5,8 @@ import {
   REELS_EVENTS,
   SPIN_BUTTON_EVENTS,
   STATE_MACHINE_EVENTS,
-} from '@lib/eventEmminer/events';
+} from '@lib/events';
 import { Phase } from '@src/flow/types';
-import { network } from '@lib/nework/nework';
 
 export const gameEventHandler = {
   onBtnSpinClick: () => {

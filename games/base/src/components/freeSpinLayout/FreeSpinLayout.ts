@@ -1,6 +1,6 @@
 import { Spine, TrackEntry } from '@esotericsoftware/spine-pixi-v8';
 import { resizeObject, SmartContainer } from '@slotplate/renderer';
-import { eventEmitter, FREE_SPIN_EVENTS, SPIN_BUTTON_EVENTS } from '@lib/eventEmminer/events';
+import { eventEmitter, FREE_SPIN_EVENTS, SPIN_BUTTON_EVENTS } from '@lib/events';
 import { rootStore } from '@src/stores/RootStore';
 
 export class FreeSpinLayout extends SmartContainer {

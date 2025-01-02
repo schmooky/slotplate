@@ -1,4 +1,4 @@
-import { eventEmitter, POPUPS_EVENTS } from '@lib/eventEmminer/events';
+import { eventEmitter, POPUPS_EVENTS } from '@lib/events';
 import { Container, Graphics } from 'pixi.js';
 
 export class GameShadow extends Container {

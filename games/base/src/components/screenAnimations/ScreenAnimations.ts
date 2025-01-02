@@ -1,6 +1,6 @@
 import { resizeObject, SmartContainer } from '@slotplate/renderer';
 import { Spine } from '@esotericsoftware/spine-pixi-v8';
-import { eventEmitter, SCREEN_EVENTS } from '@lib/eventEmminer/events';
+import { eventEmitter, SCREEN_EVENTS } from '@lib/events';
 
 export class ScreenAnimations extends SmartContainer {
   private readonly high2 = Spine.from({

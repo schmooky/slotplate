@@ -1,7 +1,7 @@
 import { resizeObject, SmartContainer } from '@slotplate/renderer';
 import { Spine } from '@esotericsoftware/spine-pixi-v8';
 import { ReelSymbol } from '@lib/config/config';
-import { eventEmitter, POPUPS_EVENTS, REELS_EVENTS } from '@lib/eventEmminer/events';
+import { eventEmitter, POPUPS_EVENTS, REELS_EVENTS } from '@lib/events';
 import { BitmapText, Container, Text, TextStyle } from 'pixi.js';
 import { rootStore } from '@src/stores/RootStore';
 import { multiplierData, symbolPaytableColors } from '@components/reels/symbolsPayline.config';

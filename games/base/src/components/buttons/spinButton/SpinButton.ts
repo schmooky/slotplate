@@ -1,7 +1,7 @@
 import { SmartContainer } from '@slotplate/renderer';
 import { Spine, TrackEntry } from '@esotericsoftware/spine-pixi-v8';
 import { Button, ButtonContainer } from '@pixi/ui';
-import { eventEmitter, SPIN_BUTTON_EVENTS } from '@lib/eventEmminer/events';
+import { eventEmitter, SPIN_BUTTON_EVENTS } from '@lib/events';
 import { gameEventHandler } from '@lib/gameEventHandler/gameEventHandler';
 import { rootStore } from '@src/stores/RootStore';
 import { BitmapText, Circle, FederatedPointerEvent } from 'pixi.js';

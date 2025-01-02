@@ -14,7 +14,7 @@ import {
   SHAKE_EVENTS,
   SPIN_BUTTON_EVENTS,
   STATE_MACHINE_EVENTS,
-} from '@lib/eventEmminer/events';
+} from '@lib/events';
 import { getRandomInt } from '@lib/utils/getRandomInt';
 import { Paylines } from '@components/paylines/Paylines';
 import { GameMode, PositionResponse, TransformationsResponse } from '@lib/nework/types';

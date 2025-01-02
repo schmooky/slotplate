@@ -7,7 +7,7 @@ import {
   REELS_EVENTS,
   SPIN_BUTTON_EVENTS,
   STATE_MACHINE_EVENTS,
-} from '@lib/eventEmminer/events';
+} from '@lib/events';
 import { BitmapText, Container, TextStyle } from 'pixi.js';
 import { CustomCircularProgressBar } from '@lib/utils/CustomCircularProgressBar';
 import gsap from 'gsap';

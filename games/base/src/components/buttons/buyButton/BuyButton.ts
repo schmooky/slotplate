@@ -2,7 +2,7 @@ import { resizeObject, SmartContainer } from '@slotplate/renderer';
 import { Spine } from '@esotericsoftware/spine-pixi-v8';
 import { rootStore } from '@src/stores/RootStore';
 import { Button, ButtonContainer } from '@pixi/ui';
-import { eventEmitter, POPUPS_EVENTS } from '@lib/eventEmminer/events';
+import { eventEmitter, POPUPS_EVENTS } from '@lib/events';
 import { Phase } from '@src/flow/types';
 import { FederatedPointerEvent, Rectangle } from 'pixi.js';
 import { gameSound } from '@src/stores/sound/GameSound';

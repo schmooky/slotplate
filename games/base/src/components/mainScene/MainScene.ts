@@ -13,7 +13,7 @@ import { ScreenAnimations } from '@components/screenAnimations/ScreenAnimations'
 import { FreeSpinLayout } from '@components/freeSpinLayout/FreeSpinLayout';
 import { Logo } from '@components/logo/Logo';
 import { gameEventHandler } from '@lib/gameEventHandler/gameEventHandler';
-import { eventEmitter, SHAKE_EVENTS } from '@lib/eventEmminer/events';
+import { eventEmitter, SHAKE_EVENTS } from '@lib/events';
 import { anticipationShake } from '@lib/utils/shakeUtils';
 
 export class MainScene extends Container implements Scene {
