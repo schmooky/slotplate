@@ -46,8 +46,6 @@
     "@slotplate/typescript-config": "*",
     "@turbo/gen": "1.10.12",
     "@types/eslint": "8.44.7",
-    "@types/react": "18.2.0",
-    "@types/react-dom": "18.2.0",
     "eslint": "8.53.0",
     "typescript": "5.2.2",
     "@typescript-eslint/eslint-plugin": "6.14.0",
@@ -55,8 +53,6 @@
     "eslint-config-turbo": "1.10.12",
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-only-warn": "1.1.0",
-    "eslint-plugin-react": "7.32.0",
-    "eslint-plugin-react-hooks": "4.3.0",
     "@microsoft/signalr": "8.0.0",
     "zod": "3.22.4",
     "@types/howler": "2.2.11",
@@ -66,7 +62,6 @@
   "peerDependencies": {
     "gsap": "^3.12.3",
     "i18next": ">=23.15.1",
-    "mobx": "^6.12.0",
-    "react": "^18.2.0"
+    "mobx": "^6.12.0"
   }
 }
