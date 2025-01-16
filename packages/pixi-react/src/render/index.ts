@@ -8,7 +8,7 @@ export const roots = new Map();
 /**
  * @param {Container} container
  */
-function unmountComponent(container)
+function unmountComponent(container: Container)
 {
     invariant(
         Container.prototype.isPrototypeOf(container),
@@ -34,7 +34,7 @@ function unmountComponent(container)
  * @param {Container} container
  * @returns {{ render: Function, unmount: Function}}
  */
-export function createRoot(container)
+export function createRoot(container: Container)
 {
     invariant(
         Container.prototype.isPrototypeOf(container),

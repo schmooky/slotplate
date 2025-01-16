@@ -9,7 +9,7 @@ export const REACT_DOM_VERSION = pkg.dependencies['react-dom'].replace(/[^0-9.]/
 export const PACKAGE_NAME = pkg.name;
 
 PixiFiber.injectIntoDevTools({
-    bundleType: process.env.NODE_ENV !== 'production' ? 1 : 0,
+    bundleType: 0, // 1
     version: REACT_DOM_VERSION,
     rendererPackageName: PACKAGE_NAME,
     findHostInstanceByFiber: PixiFiber.findHostInstance,
