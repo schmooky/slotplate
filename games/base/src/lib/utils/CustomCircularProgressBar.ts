@@ -22,9 +22,9 @@ export class CustomCircularProgressBar extends Container {
   private remainingTime: number;
   private totalTime: number;
   public ticker: Ticker;
-  private elapsedTime: number = 0;
+  private elapsedTime = 0;
   private onComplete?: () => void;
-  private isActive: boolean = false;
+  private isActive = false;
 
   constructor(options: CircularProgressBarOptions) {
     super();

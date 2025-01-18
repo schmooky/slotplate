@@ -19,7 +19,7 @@ export class ScreenAnimations extends SmartContainer {
   private setupListeners(): void {
     eventEmitter.on(SCREEN_EVENTS.high2, () => {
       this.high2.renderable = true;
-      this.high2.state.setAnimation(0, `${resizeObject.isPortrait ? 'pt' : 'ls'}`, false);
+      this.high2.state.setAnimation(0, resizeObject.isPortrait ? 'pt' : 'ls', false);
     });
 
     this.high2.state.addListener({

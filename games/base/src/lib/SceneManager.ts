@@ -5,7 +5,7 @@ export interface Scene extends Container<ContainerChild> {
 }
 
 export default class SceneManager extends Container {
-  private scene: Scene;
+  private scene!: Scene;
 
   constructor() {
     super();

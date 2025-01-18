@@ -3,7 +3,6 @@ import { IRootStore } from '@src/stores/types';
 import { phaseHandlers } from '@src/flow/phases';
 import { Phase } from '@src/flow/types';
 import { StateMachineStore } from '@slotplate/engine/state-machine';
-import { DataStore } from '@src/stores/data/DataStore';
 import { GameBalanceStore } from '@src/stores/gameBalance/GameBalanceStore';
 import { BuyFeatureStore } from '@src/stores/buyFeature/buyFeatureStore';
 import { ErrorStore } from '@src/stores/error/ErrorStore';
@@ -18,8 +17,6 @@ class RootStore implements IRootStore {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
   stateMachine = new StateMachineStore(this, phaseHandlers, Phase.Init, true);
-
-  dataStore = new DataStore();
 
   balanceStore = new GameBalanceStore();
 

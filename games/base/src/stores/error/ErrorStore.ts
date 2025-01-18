@@ -2,13 +2,13 @@ import { action, computed, makeObservable, observable } from 'mobx';
 import { IRootStore } from '@src/stores/types';
 import { i18nNetwork } from '@slotplate/engine/network';
 
-export type ErrorDataType = {
+export interface ErrorDataType {
   errorMessage?: string;
   header?: string;
   description?: string;
   button?: string;
   errorId?: number;
-};
+}
 
 export class ErrorStore {
   constructor(private rootStore: IRootStore) {
@@ -43,8 +43,8 @@ export class ErrorStore {
 
   setConnectionError = (): void => {
     this.setError({
-      header: i18nNetwork.t(`${1004}.header`),
-      description: i18nNetwork.t(`${1004}.content`),
+      header: i18nNetwork.t(`1004.header`),
+      description: i18nNetwork.t(`1004.content`),
       errorId: 1004,
     });
   };

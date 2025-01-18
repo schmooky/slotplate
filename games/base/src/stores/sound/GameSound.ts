@@ -12,7 +12,7 @@ export class GameSound extends GlobalSound {
   protected disposers: (() => void)[] = [];
   protected ambientGainNode = 'ambientGainNode';
   protected fxGainNode = 'fxGainNode';
-  private symbolSounds: Map<ReelSymbol, SoundKey> = new Map([
+  private symbolSounds = new Map<ReelSymbol, SoundKey>([
     ['high1', SoundKey.HiSymbol1],
     ['high2', SoundKey.HiSymbol2],
     ['high3', SoundKey.HiSymbol3],
@@ -195,7 +195,7 @@ export class GameSound extends GlobalSound {
       (gameSettingStore.isMainSoundsLoaded && gameSettingStore.isAmbienceSoundLoaded) ||
       (gameSettingStore.isSplashSoundsLoaded && gameSettingStore.isAmbienceSoundLoaded)
     ) {
-      (Object.keys(SoundKey) as Array<keyof typeof SoundKey>)
+      (Object.keys(SoundKey) as (keyof typeof SoundKey)[])
         .filter((key) => !keysToExclude.includes(SoundKey[key]))
         .forEach((key) => {
           if (!gameSettingStore.isSplashSoundsLoaded && SoundKey[key] === SoundKey.MusicSplash) {
@@ -250,13 +250,13 @@ export class GameSound extends GlobalSound {
   }
 
   playCurrentPhaseSound() {
-    const { gameStatusStore } = rootStore;
+    // const { gameStatusStore } = rootStore;
 
-    if (gameStatusStore.isOnFSMode && !gameStatusStore.isOnFSBonusMode) {
-      this.playSound(SoundKey.MusicFreeSpin);
-    } else {
-      this.playSound(gameSettingStore.isTurboMode ? SoundKey.MusicFastPlay : SoundKey.MusicRegular);
-    }
+    // if (gameStatusStore.isOnFSMode && !gameStatusStore.isOnFSBonusMode) {
+    //   this.playSound(SoundKey.MusicFreeSpin);
+    // } else {
+    //   this.playSound(gameSettingStore.isTurboMode ? SoundKey.MusicFastPlay : SoundKey.MusicRegular);
+    // }
   }
 
   private createSettingsChangeSoundReaction(): void {
@@ -317,7 +317,7 @@ export class GameSound extends GlobalSound {
   }
 
   dispose() {
-    this.disposers.forEach((disposer) => disposer());
+    this.disposers.forEach((disposer) => { disposer(); });
     this.disposers = [];
     return super.dispose();
   }
