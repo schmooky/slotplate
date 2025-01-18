@@ -12,15 +12,11 @@
   },
   "scripts": {
     "prepublishOnly": "tsc --project tsconfig.lint.json",
-    "build": "tsc --project tsconfig.lint.json",
-    "lint": "eslint . --fix"
+    "build": "tsc --project tsconfig.lint.json"
   },
   "devDependencies": {
-    "@slotplate/eslint-config": "*",
     "@slotplate/typescript-config": "*",
     "@turbo/gen": "^1.10.12",
-    "@types/eslint": "^8.44.7",
-    "eslint": "^8.53.0",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
