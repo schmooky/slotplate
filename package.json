@@ -1,6 +1,6 @@
 {
   "name": "create-slotplate",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Opinionated boilerplate for slot games built on pixi-reels.",
   "type": "module",
   "bin": {
