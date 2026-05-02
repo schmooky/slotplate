@@ -1,0 +1,39 @@
+---
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="State (MobX stores)" description="Observable domain state — the read surface for presenters." eyebrow="Concept">
+  <p>
+    slotplate uses MobX for state. One <code>RootStore</code> composes three domain stores:
+  </p>
+  <ul>
+    <li><code>BalanceStore</code> — <code>balance</code>, <code>bet</code>, <code>lastWin</code> + actions.</li>
+    <li><code>DataStore</code> — last server response: <code>grid</code>, <code>winlines</code>, <code>totalWin</code>, <code>teasingReels</code>.</li>
+    <li><code>UIStore</code> — <code>spinEnabled</code>, <code>stopEnabled</code>, <code>spinning</code>, <code>speed</code>.</li>
+  </ul>
+
+  <h2>Rules</h2>
+  <ul>
+    <li>Mutations go through <code>@action</code> methods only. No direct writes from outside.</li>
+    <li>Presenters observe via <code>autorun</code> or <code>reaction</code>.</li>
+    <li>Stores don't import from <code>view/</code>, <code>presenters/</code>, or <code>flow/</code>.</li>
+    <li>Stores don't call each other's actions. A phase orchestrates cross-store changes.</li>
+  </ul>
+
+  <h2>Why MobX</h2>
+  <p>
+    The alternatives that come up: Redux, Zustand, signals, raw React state. For slot
+    games:
+  </p>
+  <ul>
+    <li>Redux is overkill — the ceremony tax shows up in every diff, and slot state is small enough that you don't benefit from time-travel debugging outside dev tools.</li>
+    <li>Zustand is fine — the deciding factor for MobX was the cleaner story for cross-cutting reactions (<code>reaction</code> with <code>fireImmediately: false</code>).</li>
+    <li>Signals are promising but ecosystem maturity isn't there yet for this kind of app.</li>
+    <li>React state alone doesn't work because the Pixi view isn't in React's tree.</li>
+  </ul>
+
+  <Opinion>
+    You don't need Redux. MobX observables on a RootStore cover every slot I've shipped,
+    and the ceremony tax of Redux shows up in every diff.
+  </Opinion>
+</Docs>

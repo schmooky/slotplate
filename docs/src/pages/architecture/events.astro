@@ -1,0 +1,77 @@
+---
+import DataFlowDiagram from '../../components/arch/DataFlowDiagram.astro';
+import DiagramFrame from '../../components/arch/DiagramFrame.astro';
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs
+  title="Event flow"
+  description="Continuous state via MobX reactions; discrete events via typed emitters."
+  eyebrow="Architecture"
+>
+  <p>
+    slotplate uses two observer primitives. Pick the one that matches the shape of the
+    data, not the one you reach for out of habit.
+  </p>
+
+  <h2>MobX reactions for continuous state</h2>
+  <p>
+    <code>autorun</code> and <code>reaction</code> fire every time the observable they
+    depend on changes. They're perfect for "update the balance display when the balance
+    changes" — the data is a continuous value and the reaction is idempotent.
+  </p>
+  <pre><code>{`// HUDPresenter
+autorun(() => {
+  balance.textContent = \`Balance: $\${stores.balance.balance.toFixed(2)}\`;
+});`}</code></pre>
+
+  <h2>Event emitters for discrete events</h2>
+  <p>
+    <code>pixi-reels</code> ships a typed <code>EventEmitter&lt;ReelSetEvents&gt;</code>. Use it for
+    discrete moments: "a reel landed", "all reels landed", "the spotlight started".
+    A reaction would fire on every frame while reels spin — the wrong shape.
+  </p>
+  <pre><code>{`reelSet.events.on('spin:reelLanded', ({ reel, index }) => {
+  analytics.track('reel_landed', { index });
+});`}</code></pre>
+
+  <h2>Where events flow in a round</h2>
+  <DiagramFrame>
+    <DataFlowDiagram />
+  </DiagramFrame>
+
+  <p>
+    The loop above closes via <em>resolution events</em> — <code>allLanded</code> from the
+    reels, <code>onComplete</code> from win animations. A phase awaits these (or its
+    <code>enter</code> function returns a promise that resolves when the resolution
+    event arrives) and only then calls <code>ctx.fsm.transition</code>.
+  </p>
+
+  <h2>Who emits what</h2>
+  <table>
+    <thead>
+      <tr><th>Emitter</th><th>Events</th><th>Consumers</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>HUD DOM</code></td><td><code>click</code>, <code>keydown</code></td><td><code>HUDPresenter</code></td></tr>
+      <tr><td><code>ReelSet (pixi-reels)</code></td><td><code>spin:start</code>, <code>spin:reelLanded</code>, <code>spin:allLanded</code>, <code>spin:complete</code></td><td><code>ReelsPresenter</code>, <code>Analytics</code></td></tr>
+      <tr><td><code>MobX stores</code></td><td>reactions on observables</td><td>Presenters</td></tr>
+      <tr><td><code>NetworkManager</code></td><td>promise resolution</td><td>FSM phases</td></tr>
+    </tbody>
+  </table>
+
+  <h2>What NOT to build</h2>
+  <Opinion>
+    Don't build a central app-wide event bus unless you have three subsystems that
+    genuinely need to talk to each other without knowing about each other. In practice,
+    slots rarely do — the FSM is the bus. Adding a second event bus is a second thing
+    to debug.
+  </Opinion>
+
+  <p>Specifically, avoid:</p>
+  <ul>
+    <li>A <code>globalEvents</code> singleton you emit to from everywhere. Direct references are fine; they grep better.</li>
+    <li>Re-emitting MobX reactions as events to "decouple." Reactions already decouple — that's their job.</li>
+    <li>Re-emitting <code>pixi-reels</code> events on a custom bus. Consumers can subscribe to the original.</li>
+  </ul>
+</Docs>

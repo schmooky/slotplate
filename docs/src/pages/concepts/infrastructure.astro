@@ -1,0 +1,31 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Infrastructure (I/O)" description="Everything that talks to the outside world." eyebrow="Concept">
+  <p>
+    <code>src/infrastructure/</code> holds anything that touches the network, the platform
+    clock, the file system, or the asset pipeline.
+  </p>
+
+  <h2>What ships</h2>
+  <ul>
+    <li><code>Ticker</code> (<code>timing.ts</code>) — GSAP-synced game time scheduling.</li>
+    <li><code>NetworkManager</code> — spin requests. <code>MockNetworkManager</code> for dev; your RGS transport for prod.</li>
+    <li><code>AssetLoader</code> — Pixi bundle loader facade.</li>
+    <li><code>Analytics</code> — pluggable analytics transport.</li>
+  </ul>
+
+  <h2>Rules</h2>
+  <ul>
+    <li>Called by <code>flow/</code> (phases orchestrate it) and <code>presenters/</code> (they need the ticker).</li>
+    <li>Never depends on <code>state/</code> or <code>view/</code> — those should run without it.</li>
+    <li>Keep transport-specific code in one file per service. Two RGS providers = two implementations of <code>NetworkManager</code>, picked in <code>composition.ts</code>.</li>
+  </ul>
+
+  <h2>Why a layer, not scattered</h2>
+  <p>
+    Keeping I/O in one folder means swapping a transport is a one-file change. It
+    also gives you a clear place to add cross-cutting concerns: retry policy, request
+    tracing, rate limiting, offline fallback.
+  </p>
+</Docs>

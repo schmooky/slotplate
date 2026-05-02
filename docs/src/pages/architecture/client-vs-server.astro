@@ -1,0 +1,119 @@
+---
+import ClientServerDiagram from '../../components/arch/ClientServerDiagram.astro';
+import DiagramFrame from '../../components/arch/DiagramFrame.astro';
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs
+  title="Client vs server"
+  description="The single most important boundary in a slot codebase."
+  eyebrow="Architecture"
+>
+  <p>
+    slotplate is a client. The server is the source of truth — for the paytable, for the RNG,
+    for the grid that comes back from a spin, and for the balance after it settles.
+    This page is the definitive list of what belongs on which side.
+  </p>
+
+  <DiagramFrame caption="Checkmarks = owned here. Strikethroughs = must not be here.">
+    <ClientServerDiagram />
+  </DiagramFrame>
+
+  <h2>The wire</h2>
+  <p>
+    Exactly one request-response pair crosses the boundary per round:
+  </p>
+  <pre><code>{`// src/domain/types.ts — the whole wire contract.
+
+interface SpinRequest {
+  bet: number;
+  sessionId?: string;
+}
+
+interface SpinResponse {
+  grid: Grid;                        // what to show on the reels
+  totalWin: number;                   // what to credit the balance
+  winlines: Winline[];                // which cells won and for how much
+  teasingReels?: number[];            // which reels to slow down (optional)
+  bonus?: { id: string; payload: unknown }; // triggered bonus round
+}`}</code></pre>
+  <p>
+    If a piece of state the client needs isn't in <code>SpinResponse</code>, the server
+    extends the response — not the client reverse-engineering it from <code>grid</code>.
+  </p>
+
+  <h2>Why</h2>
+  <p>
+    Regulated slot games get certified. The certification body runs the server's evaluator
+    against millions of seeds, produces an RTP report, and signs it. If the client has its
+    own evaluator, the two drift — even starting from the same code — and one ends up
+    wrong. That's a live incident and a certification re-run.
+  </p>
+  <p>
+    The second reason is operational: when a win doesn't show correctly in the field, you
+    need to know whether the bug is in the math or in the replay. If they're separate
+    codebases with separate concerns, the answer takes minutes. If they're entangled, it
+    takes days.
+  </p>
+
+  <Opinion>
+    The client does not evaluate wins. Not as a "just for display" fallback. Not for
+    offline mode. Not for "faster response." If your architecture has an
+    <code>evaluateWin</code> on the client, you have two sources of truth and one of them is wrong.
+  </Opinion>
+
+  <h2>The mock server in slotplate</h2>
+  <p>
+    <code>src/infrastructure/NetworkManager.ts</code> ships with a <code>MockNetworkManager</code>
+    that returns a plausible <code>SpinResponse</code> with a random grid and no wins.
+    It exists so the client can boot during development without a real server.
+  </p>
+  <p>
+    <strong>Do not extend it with real math.</strong> If you want reproducible dev spins,
+    run a real (even minimal) server alongside. The mock is a placeholder, not a sandbox.
+  </p>
+
+  <h2>Common temptations (all wrong)</h2>
+
+  <h3>"The client should know the paytable for tooltips."</h3>
+  <p>
+    Tooltips should come from the server too, or from a static asset the server publishes.
+    Bundling the paytable into the client means shipping a new client to adjust a payout —
+    exactly what you want to avoid. Serve paytable-as-data over an endpoint.
+  </p>
+
+  <h3>"We need optimistic win display for responsiveness."</h3>
+  <p>
+    No — the network response arrives before the reels finish landing. You're not waiting
+    on the server; you're waiting on the reels. The order is: reels start → server responds
+    → reels land on the server's grid → spotlight the server's winlines. No optimism needed.
+  </p>
+
+  <h3>"What about free spins? The server already committed, so the client should evaluate them."</h3>
+  <p>
+    No — each free spin is still a server round. The server is authoritative on whether
+    the free-spin session continues, on the multiplier, on retriggers. The client plays them
+    back one by one.
+  </p>
+
+  <h3>"For demo mode, the client must generate results."</h3>
+  <p>
+    Then run a demo server. Or add a server endpoint <code>/demo/spin</code> that uses a fixed
+    seed. The client still just replays. Never two evaluators.
+  </p>
+
+  <h2>What the client DOES own</h2>
+  <ul>
+    <li><strong>When to show things.</strong> The FSM phases sequence the reveal.</li>
+    <li><strong>How to animate.</strong> Reel behavior, win pulses, spotlight, bigwin scenes.</li>
+    <li><strong>Speed modes.</strong> Turbo / SuperTurbo skip phases — purely presentation.</li>
+    <li><strong>Skip / slam-stop.</strong> Cancelling animations to reveal early. State is unchanged.</li>
+    <li><strong>Input validation.</strong> Reject invalid bets before the request goes out.</li>
+    <li><strong>Optimistic balance display.</strong> Debit the bet locally for snappy feedback; the server's number is truth.</li>
+  </ul>
+
+  <p>
+    In short: the client owns <em>presentation and timing</em>; the server owns
+    <em>game state and outcomes</em>. Keep the line clean.
+  </p>
+</Docs>

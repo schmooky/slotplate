@@ -1,0 +1,72 @@
+---
+// Why setTimeout is broken in hidden tabs, and why GSAP + Pixi ticker fix it.
+---
+<svg viewBox="0 0 900 380" class="w-full h-auto max-h-[440px]" role="img" aria-label="Ticker sync vs setTimeout">
+  <!-- Bad column -->
+  <g>
+    <rect x="20" y="20" width="410" height="340" rx="14" fill="hsl(0 60% 98%)" stroke="hsl(0 70% 70%)" stroke-width="2" />
+    <text x="40" y="48" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="700" fill="hsl(0 70% 45%)" letter-spacing="0.14em">BROKEN · setTimeout</text>
+
+    <text x="40" y="76" font-family="Inter, sans-serif" font-size="12" fill="hsl(20 20% 12%)">setTimeout runs on the platform clock.</text>
+
+    <!-- Tab visible -->
+    <text x="40" y="108" font-family="ui-monospace, Menlo, monospace" font-size="10" font-weight="700" fill="hsl(20 10% 40%)">TAB VISIBLE</text>
+    <rect x="40" y="118" width="350" height="30" rx="6" fill="hsl(0 0% 100%)" stroke="hsl(24 25% 85%)" />
+    <!-- pixi ticks -->
+    {[50, 100, 150, 200, 250, 300].map((x) => (
+      <circle cx={40 + x + 20} cy="133" r="3.5" fill="hsl(22 92% 52%)" />
+    ))}
+    <text x="40" y="162" font-family="ui-monospace, Menlo, monospace" font-size="9" fill="hsl(20 10% 40%)">pixi ticker · animation runs</text>
+
+    <rect x="40" y="178" width="350" height="30" rx="6" fill="hsl(0 0% 100%)" stroke="hsl(24 25% 85%)" />
+    {[50, 100, 150, 200, 250, 300].map((x) => (
+      <circle cx={40 + x + 20} cy="193" r="3.5" fill="hsl(0 70% 50%)" />
+    ))}
+    <text x="40" y="222" font-family="ui-monospace, Menlo, monospace" font-size="9" fill="hsl(20 10% 40%)">setTimeout · fires on schedule</text>
+
+    <!-- Tab hidden -->
+    <text x="40" y="250" font-family="ui-monospace, Menlo, monospace" font-size="10" font-weight="700" fill="hsl(20 10% 40%)">TAB HIDDEN</text>
+    <rect x="40" y="260" width="350" height="30" rx="6" fill="hsl(26 30% 96%)" stroke="hsl(24 25% 85%)" />
+    <!-- pixi paused -->
+    <text x="215" y="279" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="10" fill="hsl(20 10% 40%)">(paused)</text>
+    <text x="40" y="304" font-family="ui-monospace, Menlo, monospace" font-size="9" fill="hsl(20 10% 40%)">pixi ticker · paused</text>
+
+    <rect x="40" y="320" width="350" height="30" rx="6" fill="hsl(0 0% 100%)" stroke="hsl(0 70% 70%)" />
+    {[50, 150, 250].map((x) => (
+      <circle cx={40 + x + 20} cy="335" r="3.5" fill="hsl(0 70% 50%)" />
+    ))}
+    <text x="40" y="367" fill="white" font-size="0">hidden</text>
+  </g>
+
+  <!-- Good column -->
+  <g transform="translate(460 0)">
+    <rect x="10" y="20" width="410" height="340" rx="14" fill="hsl(140 50% 98%)" stroke="hsl(140 60% 70%)" stroke-width="2" />
+    <text x="30" y="48" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="700" fill="hsl(140 60% 35%)" letter-spacing="0.14em">CORRECT · Ticker.schedule</text>
+
+    <text x="30" y="76" font-family="Inter, sans-serif" font-size="12" fill="hsl(20 20% 12%)">gsap.delayedCall on app.ticker.</text>
+
+    <text x="30" y="108" font-family="ui-monospace, Menlo, monospace" font-size="10" font-weight="700" fill="hsl(20 10% 40%)">TAB VISIBLE</text>
+    <rect x="30" y="118" width="350" height="30" rx="6" fill="hsl(0 0% 100%)" stroke="hsl(24 25% 85%)" />
+    {[50, 100, 150, 200, 250, 300].map((x) => (
+      <circle cx={30 + x + 20} cy="133" r="3.5" fill="hsl(22 92% 52%)" />
+    ))}
+    <text x="30" y="162" font-family="ui-monospace, Menlo, monospace" font-size="9" fill="hsl(20 10% 40%)">pixi ticker</text>
+
+    <rect x="30" y="178" width="350" height="30" rx="6" fill="hsl(0 0% 100%)" stroke="hsl(24 25% 85%)" />
+    {[50, 100, 150, 200, 250, 300].map((x) => (
+      <circle cx={30 + x + 20} cy="193" r="3.5" fill="hsl(140 60% 45%)" />
+    ))}
+    <text x="30" y="222" font-family="ui-monospace, Menlo, monospace" font-size="9" fill="hsl(20 10% 40%)">GSAP synced to pixi.ticker</text>
+
+    <text x="30" y="250" font-family="ui-monospace, Menlo, monospace" font-size="10" font-weight="700" fill="hsl(20 10% 40%)">TAB HIDDEN</text>
+    <rect x="30" y="260" width="350" height="30" rx="6" fill="hsl(26 30% 96%)" stroke="hsl(24 25% 85%)" />
+    <text x="205" y="279" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="10" fill="hsl(20 10% 40%)">(paused)</text>
+    <text x="30" y="304" font-family="ui-monospace, Menlo, monospace" font-size="9" fill="hsl(20 10% 40%)">pixi ticker · paused</text>
+
+    <rect x="30" y="320" width="350" height="30" rx="6" fill="hsl(26 30% 96%)" stroke="hsl(140 60% 70%)" />
+    <text x="205" y="339" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="10" fill="hsl(140 60% 35%)" font-weight="700">(also paused — in sync)</text>
+  </g>
+
+  <!-- Center divider with X -->
+  <text x="450" y="200" text-anchor="middle" font-family="Inter, sans-serif" font-size="36" font-weight="800" fill="hsl(24 25% 85%)">⇌</text>
+</svg>

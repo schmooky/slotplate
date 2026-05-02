@@ -1,0 +1,61 @@
+---
+import DiagramFrame from '../../components/arch/DiagramFrame.astro';
+import FsmDiagram from '../../components/arch/FsmDiagram.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Add a bonus game" description="Nest a sub-FSM inside a BonusPhase." eyebrow="How-to">
+  <p>
+    Bonus games — "pick one of three chests", mini-slot, wheel-spin — run their own state
+    machine. slotplate's pattern is to nest a sub-FSM inside a parent phase.
+  </p>
+
+  <DiagramFrame caption="The outer FSM (shown). Add BonusPhase between stopSpin and winShow (or wherever your trigger lives) and run the inner FSM to completion.">
+    <FsmDiagram />
+  </DiagramFrame>
+
+  <h2>Steps</h2>
+  <ol>
+    <li>
+      <strong>Create <code>BonusPhase</code>.</strong> In <code>enter</code>, instantiate
+      a new <code>FSM</code> with bonus-only phases (<code>bonusIntro</code>,
+      <code>bonusRound</code>, <code>bonusReveal</code>, <code>bonusOutro</code>).
+      Run it to completion, then transition the parent FSM to the next state.
+    </li>
+    <li>
+      <strong>Add a <code>BonusSession</code> store.</strong> It accumulates the bonus
+      win without touching <code>BalanceStore</code> until the outro. The main-game
+      balance is frozen during the bonus.
+    </li>
+    <li>
+      <strong>Add a scene if needed.</strong> If the bonus has its own display tree
+      (splash, different layout), add <code>BonusScene</code> in <code>view/scenes/</code>.
+      Mount it on bonus entry, unmount on exit. Don't reuse <code>MainScene</code> —
+      the lifecycles differ.
+    </li>
+    <li>
+      <strong>Add a presenter</strong> (<code>BonusPresenter</code>) bridging the bonus
+      store to the bonus scene. Same contract as <code>ReelsPresenter</code>.
+    </li>
+    <li>
+      <strong>Wire the trigger.</strong> <code>stopSpin</code> checks
+      <code>ctx.stores.data.bonus</code>; if set, transition to <code>bonus</code>
+      instead of <code>winShow</code>.
+    </li>
+  </ol>
+
+  <h2>Rules</h2>
+  <ul>
+    <li>Main-game state stays frozen during the bonus. No main-game phase runs until the parent phase exits.</li>
+    <li>Bonus phases follow all the same rules: one file each, <code>Ticker.schedule</code> for timing, <code>Disposable</code> for cleanup.</li>
+    <li>The bonus FSM is scoped to the parent phase. Tear it down in <code>BonusPhase.exit</code>.</li>
+    <li>The server decides all bonus outcomes — the client plays them back, like main-game spins.</li>
+  </ul>
+
+  <h2>Wire protocol for bonus</h2>
+  <p>
+    Your <code>SpinResponse.bonus</code> field carries the bonus id and payload. The
+    server can either (a) return the whole bonus outcome up front, or (b) send per-pick
+    updates as the user interacts. slotplate's contract is flexible — <code>BonusPhase</code>
+    can make follow-up requests via <code>NetworkManager.pickChest(...)</code> or similar.
+  </p>
+</Docs>

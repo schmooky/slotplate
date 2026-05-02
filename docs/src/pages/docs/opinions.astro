@@ -1,0 +1,92 @@
+---
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs
+  title="Opinions"
+  description="Every opinionated call slotplate makes, collected so you can decide if we're right for your team."
+  eyebrow="The positions we're taking"
+>
+  <p>
+    Many of these show up inline throughout the docs. This page exists as the one-place-to-share
+    version. If one of these stops you cold, slotplate is probably not for you — and that's fine,
+    our opinions being wrong for you doesn't make them wrong in general.
+  </p>
+
+  <h2>Architecture</h2>
+  <Opinion title="On state management">
+    You don't need Redux. MobX observables on a RootStore cover every slot I've shipped,
+    and the ceremony tax of Redux shows up in every diff. If you want time-travel debugging,
+    use MobX dev tools.
+  </Opinion>
+  <Opinion title="On reel engines">
+    Never build a bespoke reel renderer. You will rebuild pooling, wrapping, anticipation,
+    and Spine integration — badly — and then spend a year fixing the bugs pixi-reels already fixed.
+  </Opinion>
+  <Opinion title="On FSMs">
+    Slot games are finite state machines. Pretending otherwise produces spaghetti of
+    <code>isSpinning</code>, <code>canStop</code>, <code>showingWin</code>, <code>awaitingResponse</code>.
+    One FSM with named phases is ten times easier to read and correct by construction.
+  </Opinion>
+  <Opinion title="On composition">
+    There is exactly one composition root per app. <code>new</code> in a random component is a future bug.
+  </Opinion>
+
+  <h2>Client vs server</h2>
+  <Opinion title="On client-side evaluation">
+    The client never evaluates wins. Not as a fallback. Not "for offline mode." Not
+    "for faster response." Two evaluators means two sources of truth, and one is wrong.
+  </Opinion>
+  <Opinion title="On RTP on the client">
+    There is no RTP harness in slotplate. That's a server concern. The client's job
+    is fidelity of replay, not correctness of math.
+  </Opinion>
+
+  <h2>Timing</h2>
+  <Opinion title="On setTimeout">
+    Game code never calls <code>setTimeout</code>. Not once. Not "just this time."
+    Use the ticker. Future you will thank present you the first time a tester reports
+    a double-spin from a backgrounded tab.
+  </Opinion>
+  <Opinion title="On GSAP">
+    GSAP is fine. It's battle-tested and its easing curves are what designers expect.
+    Just sync its root ticker to Pixi's — otherwise it runs on a separate clock and
+    all your nice invariants break.
+  </Opinion>
+
+  <h2>Errors</h2>
+  <Opinion title="On silent failures">
+    No silent catches. An error you see on day one is cheap. A silent divergence
+    discovered in week four is not.
+  </Opinion>
+  <Opinion title="On fallbacks">
+    Do not fall back to a default when a config is missing. Throw with a message that
+    names what's missing and who should have provided it.
+  </Opinion>
+
+  <h2>Scope</h2>
+  <Opinion title="On premature abstraction">
+    Three similar lines is better than a premature abstraction. Build the second case
+    before you build the interface.
+  </Opinion>
+  <Opinion title="On PR size">
+    One logical change per PR. If the description needs "and" twice, split it.
+    Small PRs ship; large ones get reverted.
+  </Opinion>
+
+  <h2>Monorepos</h2>
+  <Opinion title="On monorepos">
+    Monorepos are a cost. Pay it only when you need to publish multiple packages
+    or have multiple apps sharing code. A single slot doesn't.
+  </Opinion>
+
+  <h2>AI agents</h2>
+  <Opinion title="On agent-ready docs">
+    Docs exist to be consumed. The llms.txt convention is five minutes of work and
+    makes your project legible to tools that will increasingly read it. There is no downside.
+  </Opinion>
+  <Opinion title="On committing agent rules">
+    Commit <code>CLAUDE.md</code>. Commit <code>.claude/commands/</code>. An agent without
+    project-specific rules will drift; with them, it stays on-spec.
+  </Opinion>
+</Docs>

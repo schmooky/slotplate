@@ -1,0 +1,83 @@
+---
+import DataFlowDiagram from '../../components/arch/DataFlowDiagram.astro';
+import DiagramFrame from '../../components/arch/DiagramFrame.astro';
+import LayerStackDiagram from '../../components/arch/LayerStackDiagram.astro';
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs
+  title="Layered architecture"
+  description="The stack with enforced import direction."
+  eyebrow="Architecture"
+>
+  <DiagramFrame caption="Each named block is a folder under src/. Arrows show the only direction imports may point.">
+    <LayerStackDiagram />
+  </DiagramFrame>
+
+  <h2>Reading the stack</h2>
+  <p>
+    Top to bottom is outer to inner: the UI (HTML or React) mounts scenes, scenes hand off
+    to the FSM, the FSM drives presenters, presenters observe stores, stores hold domain
+    wire-types. Infrastructure (network, timing, assets) is a sibling service layer that
+    flow and presenters can call into.
+  </p>
+
+  <h2>Import rules</h2>
+  <ul>
+    <li>A layer may import from layers <em>below</em> it.</li>
+    <li>A layer may NOT import from layers <em>above</em> or <em>alongside</em> it
+      (except <code>infrastructure</code>, which is a shared service layer callable by
+      <code>flow/</code> and <code>presenters/</code>).</li>
+    <li><code>domain/</code> imports nothing but types and other <code>domain/</code> files.</li>
+    <li>Only <code>view/</code> and <code>presenters/</code> may import <code>pixi-reels</code> / <code>pixi.js</code>.</li>
+  </ul>
+  <p>
+    These are enforced by <code>biome.json</code> using <code>no-restricted-imports</code>
+    rules. Violating them fails lint locally and in CI.
+  </p>
+
+  <h2>One layer per folder</h2>
+  <p>Here's what lives where:</p>
+  <table>
+    <thead>
+      <tr><th>Folder</th><th>Content</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>src/composition.ts</code></td><td>Composition root. Wires every service.</td></tr>
+      <tr><td><code>container/</code></td><td>Tiny DI container (type-keyed, lazy).</td></tr>
+      <tr><td><code>state/</code></td><td>MobX stores. Observable state + <code>@action</code> mutators.</td></tr>
+      <tr><td><code>domain/</code></td><td>Wire types only. <code>SpinRequest</code>, <code>SpinResponse</code>, <code>Grid</code>, <code>Winline</code>.</td></tr>
+      <tr><td><code>infrastructure/</code></td><td>I/O. Network, ticker, assets, analytics.</td></tr>
+      <tr><td><code>flow/</code></td><td>FSM + phase handlers. Owns game time.</td></tr>
+      <tr><td><code>presenters/</code></td><td>State → view. <code>ReelsPresenter</code>, <code>HUDPresenter</code>.</td></tr>
+      <tr><td><code>view/</code></td><td>Pixi scenes, symbol classes, overlays.</td></tr>
+      <tr><td><code>config/</code></td><td>Client-side config (grid dims, symbol ids).</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Data flow through the layers</h2>
+  <DiagramFrame caption="The loop never breaks. Input at the left, resolution feeds back to the FSM, FSM transitions again.">
+    <DataFlowDiagram />
+  </DiagramFrame>
+
+  <h2>Why layers, not packages</h2>
+  <p>
+    A package per layer is overkill for a single-game repo. It introduces build
+    orchestration, version management, and workspace linking — all of which are costs.
+    Layers as folders plus lint boundaries give you the isolation without the ceremony.
+  </p>
+
+  <Opinion>
+    Monorepos are a cost. Pay it only when you need to publish multiple packages or
+    have multiple apps sharing code. A single slot doesn't.
+  </Opinion>
+
+  <h2>Violating the rules</h2>
+  <p>
+    If you <em>really</em> need to cross a boundary (and sometimes you do — Pixi math
+    utilities, for example, are a judgement call), do it with an ADR. An architecture
+    decision record is a committed document explaining <em>why this case is
+    different</em>. Adding a rule exception via code comment is not acceptable; the
+    justification lives in version control where future-you can find it.
+  </p>
+</Docs>

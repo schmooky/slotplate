@@ -1,0 +1,18 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Adapter / DTO" description="Translating between layer shapes." eyebrow="Pattern">
+  <p>
+    <strong>Where:</strong> <code>ReelsPresenter</code> (adapts app state to the
+    <code>pixi-reels</code> API), response mappers in <code>infrastructure/</code>.
+  </p>
+  <p>
+    <strong>The rule:</strong> when two layers have different shapes, put a thin adapter
+    at the boundary. Don't leak the outer shape inward.
+  </p>
+  <p>
+    <strong>DTO note:</strong> network responses are DTOs. Validate them at the boundary
+    (<code>NetworkManager</code>) and hand domain-shaped data to the rest of the app.
+    Do not pass raw JSON through phases.
+  </p>
+</Docs>

@@ -1,0 +1,88 @@
+---
+import ClientServerDiagram from '../components/arch/ClientServerDiagram.astro';
+import DiagramFrame from '../components/arch/DiagramFrame.astro';
+import LayerStackDiagram from '../components/arch/LayerStackDiagram.astro';
+import Hero from '../components/Hero.astro';
+import Opinion from '../components/Opinion.astro';
+import Base from '../layouts/Base.astro';
+---
+<Base>
+  <Hero />
+
+  <section class="container py-16">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-3xl font-semibold tracking-tight mb-4">A client that knows its place.</h2>
+      <p class="text-lg text-muted-foreground">
+        slotplate is a boilerplate for slot game <strong class="text-foreground">clients</strong>.
+        That word matters. The server owns the math, the paytable, the RNG, and the
+        source of truth for balance. The client renders what the server said happened —
+        with the timing, feel, and polish that makes a slot worth playing.
+      </p>
+
+      <DiagramFrame title="Who owns what" caption="If it's math, it's server. If it's pixels, it's client. Crossing this line is the fastest way to a cert failure.">
+        <ClientServerDiagram />
+      </DiagramFrame>
+
+      <p>
+        What slotplate gives you: a shape that resists the common failure modes of slot codebases.
+        Spin-then-settle spaghetti, bespoke reel engines that reinvent <a href="https://github.com/schmooky/pixi-reels" class="text-primary underline-offset-4 hover:underline">pixi-reels</a> badly,
+        <code class="rounded bg-secondary px-1.5 py-0.5 text-sm font-mono text-primary">setTimeout</code> timers leaking across scenes, paytables hardcoded into TS that the math team never sees.
+        We've seen each of those ship. Each has the same fix shape; slotplate bakes it in.
+      </p>
+
+      <Opinion>
+        Never build a bespoke reel renderer. You will rebuild pooling, wrapping, anticipation,
+        and Spine integration — badly — and then spend a year fixing the bugs pixi-reels already fixed.
+      </Opinion>
+    </div>
+  </section>
+
+  <section class="container py-8">
+    <div class="mx-auto max-w-4xl">
+      <h2 class="text-3xl font-semibold tracking-tight mb-2">The mile-high view</h2>
+      <p class="text-muted-foreground mb-4">
+        Layers with enforced import direction. Domain at the bottom holds only wire types —
+        the shapes that cross between client and server. No win evaluation lives here.
+      </p>
+      <DiagramFrame>
+        <LayerStackDiagram />
+      </DiagramFrame>
+    </div>
+  </section>
+
+  <section class="container py-16">
+    <div class="mx-auto max-w-4xl grid gap-6 md:grid-cols-3">
+      <a href="/docs/quickstart/" class="group rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/50 hover:bg-primary/[0.02]">
+        <div class="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary mb-2">Start here</div>
+        <div class="font-semibold mb-1 group-hover:text-primary">Quickstart</div>
+        <div class="text-sm text-muted-foreground">npm create slotplate. Two commands, one running client.</div>
+      </a>
+      <a href="/architecture/" class="group rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/50 hover:bg-primary/[0.02]">
+        <div class="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary mb-2">Architecture</div>
+        <div class="font-semibold mb-1 group-hover:text-primary">How it fits together</div>
+        <div class="text-sm text-muted-foreground">Layers, FSM, spin sequence, event flow — all with real diagrams.</div>
+      </a>
+      <a href="/docs/principles/" class="group rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/50 hover:bg-primary/[0.02]">
+        <div class="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary mb-2">Rules</div>
+        <div class="font-semibold mb-1 group-hover:text-primary">The 10 principles</div>
+        <div class="text-sm text-muted-foreground">Hard rules, enforced by Biome. Know them before editing.</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="container py-16">
+    <div class="mx-auto max-w-3xl rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/[0.04] to-accent/[0.04] p-8">
+      <div class="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary mb-3">For agents</div>
+      <h3 class="text-2xl font-semibold mb-3">Designed to be edited by AI</h3>
+      <p class="text-muted-foreground mb-4">
+        Every scaffolded project ships with <code class="rounded bg-secondary px-1.5 py-0.5 text-sm font-mono text-primary">CLAUDE.md</code>, <code class="rounded bg-secondary px-1.5 py-0.5 text-sm font-mono text-primary">AGENTS.md</code>,
+        slash commands, and Biome rules that encode the principles. Point your agent at
+        <a href="/llms-full.txt" class="text-primary underline-offset-4 hover:underline">/llms-full.txt</a>
+        and it stays on-spec.
+      </p>
+      <a href="/docs/agents/" class="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+        How to use slotplate with an AI agent →
+      </a>
+    </div>
+  </section>
+</Base>

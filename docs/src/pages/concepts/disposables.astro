@@ -1,0 +1,38 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Disposables" description="One cancellation primitive for everything." eyebrow="Concept">
+  <p>
+    Every allocation — a ticker handle, a MobX reaction, an event listener, a Pixi
+    resource — implements <code>Disposable</code> and is owned by a parent that tears it down.
+  </p>
+  <pre><code>{`export interface Disposable {
+  dispose(): void;
+}`}</code></pre>
+  <p>
+    Phases dispose their tickers on <code>exit</code>. Scenes dispose their presenters
+    on teardown. <code>DisposableBag</code> collects children so the parent doesn't have
+    to remember handles individually.
+  </p>
+
+  <h2>Rule of thumb</h2>
+  <p>
+    If you write <code>const x = something.on(...)</code> or
+    <code>const x = ticker.schedule(...)</code>, the return value has a <code>dispose</code>
+    and the parent is responsible for calling it.
+  </p>
+
+  <h2>Why</h2>
+  <p>
+    A slot runs for hours. Tiny leaks — a callback here, a listener there — compound.
+    Resource-leak bugs are usually invisible for the first week and lethal by the second.
+    A consistent disposal contract turns "did anyone clean this up?" into "yes, its
+    parent did, in <code>dispose()</code>."
+  </p>
+
+  <h2>Idempotence</h2>
+  <p>
+    <code>dispose</code> is safe to call twice. Implementations no-op after the first call.
+    This lets parents dispose aggressively without tracking "already disposed" flags.
+  </p>
+</Docs>

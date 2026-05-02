@@ -1,0 +1,98 @@
+---
+import DiagramFrame from '../../components/arch/DiagramFrame.astro';
+import FsmDiagram from '../../components/arch/FsmDiagram.astro';
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs
+  title="FSM & phases"
+  description="Named phases, explicit transitions, one current state."
+  eyebrow="Architecture"
+>
+  <DiagramFrame title="The default FSM" caption="idle at rest, three active phases during a round.">
+    <FsmDiagram />
+  </DiagramFrame>
+
+  <h2>Why an FSM</h2>
+  <p>
+    A slot round is a finite sequence of states. It can be in <em>exactly one</em> at a
+    time. Anything that tracks game state with booleans (<code>isSpinning</code>,
+    <code>canStop</code>, <code>awaitingResponse</code>) ends up with four booleans,
+    then five, then six — and you can't prove which combinations are reachable.
+  </p>
+  <p>
+    A named FSM collapses those booleans to a single enum. The set of reachable states
+    is the set of registered phases. The set of transitions is readable by grepping for
+    <code>fsm.transition</code>. Review, test, debug — all easier.
+  </p>
+
+  <h2>The <code>Phase</code> contract</h2>
+  <pre><code>{`interface Phase {
+  readonly name: string;
+  enter(ctx: PhaseContext): void | Promise<void>;
+  skip?(ctx: PhaseContext): void;
+  exit?(ctx: PhaseContext): void;
+}`}</code></pre>
+  <ul>
+    <li><code>enter</code> — the phase runs. Await work here; call <code>ctx.fsm.transition(...)</code> to move on.</li>
+    <li><code>skip</code> — fast-forward. Called when the user slam-stops, or when Turbo skips a reveal.</li>
+    <li><code>exit</code> — dispose anything the phase allocated (tickers, listeners).</li>
+  </ul>
+
+  <h2>The context</h2>
+  <p>
+    Every phase receives the same <code>PhaseContext</code>:
+  </p>
+  <pre><code>{`interface PhaseContext {
+  fsm: FSM;
+  stores: RootStore;
+  ticker: Ticker;
+  network: NetworkManager;
+  reels: ReelsPresenter;
+  hud: HUDPresenter;
+}`}</code></pre>
+  <p>
+    Phases don't reach for globals. They use <code>ctx</code>. This makes them trivially
+    testable — instantiate with mocks and assert what happens. No <code>vi.mock</code> gymnastics.
+  </p>
+
+  <h2>Adding a phase</h2>
+  <ol>
+    <li>Create <code>src/flow/phases/MyPhase.ts</code>. Implement <code>Phase</code>.</li>
+    <li>Register in <code>src/composition.ts</code> with <code>fsm.register(new MyPhase())</code>.</li>
+    <li>Add a transition to it from wherever in the existing flow should enter it.</li>
+    <li>Add a test in <code>tests/flow/MyPhase.test.ts</code>.</li>
+  </ol>
+  <p>
+    The slash command <code>/add-phase MyPhase</code> does all of this for you.
+  </p>
+
+  <Opinion>
+    Do not loop inside a phase. If you find yourself writing <code>while (stillGoing)</code>
+    inside <code>enter</code>, you have two phases, not one. Cascade is the canonical
+    example: evaluate, collapse, refill, re-evaluate — each is its own phase the FSM
+    runs until the loop condition fails.
+  </Opinion>
+
+  <h2>Nested FSMs</h2>
+  <p>
+    A bonus game runs its own FSM inside a single parent phase. The parent phase's
+    <code>enter</code> instantiates a new <code>FSM</code>, registers bonus phases
+    (<code>bonusIntro</code>, <code>bonusRound</code>, <code>bonusReveal</code>,
+    <code>bonusOutro</code>), runs it to completion, then calls <code>ctx.fsm.transition</code>
+    on the parent to move past the bonus.
+  </p>
+  <p>
+    Main-game state stays frozen during the bonus. No main-game phase runs until the
+    parent phase exits.
+  </p>
+
+  <h2>What belongs here vs elsewhere</h2>
+  <ul>
+    <li><strong>In the phase:</strong> orchestration, timing, transitions.</li>
+    <li><strong>In a presenter:</strong> translating state changes into view calls.</li>
+    <li><strong>In a store:</strong> holding observable state.</li>
+    <li><strong>In infrastructure:</strong> I/O (network, assets, analytics).</li>
+    <li><strong>In the server:</strong> everything about what outcomes happen.</li>
+  </ul>
+</Docs>

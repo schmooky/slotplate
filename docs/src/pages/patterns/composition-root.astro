@@ -1,0 +1,19 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Composition root" description="One file that wires everything." eyebrow="Pattern">
+  <p><strong>Where:</strong> <code>src/composition.ts</code>.</p>
+  <p>
+    <strong>The rule:</strong> all <code>new Service(...)</code> calls happen here. Every
+    other file receives dependencies.
+  </p>
+  <p>
+    <strong>Why:</strong> grepability. "Where does this service come from?" has one
+    answer. Swapping implementations is a one-file change.
+  </p>
+  <p>
+    <strong>Reading:</strong> Mark Seemann, <em>Dependency Injection Principles, Practices,
+    and Patterns</em> (ch. 4).
+  </p>
+  <p>See <a href="/concepts/composition-root/">Composition root concept</a> for more.</p>
+</Docs>

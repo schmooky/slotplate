@@ -1,0 +1,46 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Presenters" description="State → view. Nothing more." eyebrow="Concept">
+  <p>
+    A presenter is a thin class that:
+  </p>
+  <ol>
+    <li>Observes state (MobX <code>autorun</code> or reactions).</li>
+    <li>Translates state into view calls (<code>reelSet.setResult(...)</code>, DOM updates).</li>
+    <li>Exposes a narrow API the FSM can drive (<code>startSpin()</code>, <code>showWin()</code>).</li>
+  </ol>
+  <p>
+    It does <strong>not</strong> decide <em>when</em>. A presenter with a <code>setTimeout</code>
+    inside it is a presenter doing too much.
+  </p>
+
+  <h2>The two slotplate ships</h2>
+  <ul>
+    <li>
+      <strong><code>ReelsPresenter</code></strong> — wraps the reel engine (<code>pixi-reels</code>).
+      Only file outside <code>view/</code> allowed to import it. Defines the
+      <code>ReelsEngine</code> interface — swap implementations here.
+    </li>
+    <li>
+      <strong><code>HUDPresenter</code></strong> — binds MobX state to the plain DOM buttons
+      in <code>index.html</code>. Swap for a React component if you want, as long as it
+      keeps the same surface (<code>mount(root)</code>, <code>dispose()</code>).
+    </li>
+  </ul>
+
+  <h2>When to add a presenter</h2>
+  <p>Add a new presenter when you have a new view surface to bridge:</p>
+  <ul>
+    <li><code>WinlinePresenter</code> for an overlay that draws payline paths.</li>
+    <li><code>BigWinPresenter</code> for a scene that dims the reels and counts up.</li>
+    <li><code>SoundPresenter</code> if sound cues are driven by state (probably, for slots).</li>
+  </ul>
+
+  <h2>The MVP name</h2>
+  <p>
+    Yes this is Model-View-Presenter, roughly. Close cousin to MVVM. slotplate uses
+    "presenter" because they tend to be thinner than a ViewModel — no two-way binding,
+    just observable read and view write.
+  </p>
+</Docs>

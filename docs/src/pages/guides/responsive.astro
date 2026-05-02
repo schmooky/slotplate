@@ -1,0 +1,37 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Responsive & portrait layouts" description="Aspect-ratio-aware scenes without branching in business code." eyebrow="How-to">
+  <p>
+    Responsive layout is a <strong>scene concern</strong> — not a store, not a phase, not
+    a domain concern. Keep it there.
+  </p>
+
+  <h2>Pattern</h2>
+  <ul>
+    <li>Listen to <code>window.resize</code> in the scene.</li>
+    <li>Compute a layout (portrait / landscape / narrow / wide) and apply it to the reel container + HUD positions.</li>
+    <li>Keep reel-cell dimensions in one file (<code>src/view/scenes/layout.ts</code>) so every subsystem reads from the same source.</li>
+  </ul>
+
+  <h2>Don't</h2>
+  <ul>
+    <li>Branch on aspect ratio inside presenters or phases.</li>
+    <li>Keep per-orientation duplicates of stores or phases.</li>
+    <li>Recompute cell bounds in overlays. Call <code>reelSet.getCellBounds(reel, row)</code>.</li>
+  </ul>
+
+  <h2>Breakpoints</h2>
+  <p>
+    Slot clients typically have two or three layouts: landscape desktop, landscape
+    phone, portrait phone. Branch at the layout level and flow everything else from
+    there. Don't try to interpolate — designers want each layout tuned.
+  </p>
+
+  <h2>Iframe embedding</h2>
+  <p>
+    RGS lobbies load slot clients in iframes with fixed aspect ratios. Verify your
+    CSP and <code>postMessage</code> origin. Test with a narrow container in dev
+    (<code>?frame=narrow</code>) before shipping.
+  </p>
+</Docs>

@@ -1,0 +1,16 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Disposable" description="One cancellation primitive for everything." eyebrow="Pattern">
+  <p><strong>Where:</strong> <code>src/utils/Disposable.ts</code> (<code>Disposable</code>, <code>DisposableBag</code>).</p>
+  <p>
+    <strong>The rule:</strong> any class that allocates a resource (listener, ticker handle,
+    reaction, Pixi object) implements <code>Disposable</code>. Parents dispose children in
+    their own <code>dispose()</code>.
+  </p>
+  <p>
+    <strong>Why:</strong> the resource-leak bug you don't catch in review is a day-of-launch
+    support ticket. One primitive, one contract, no surprises.
+  </p>
+  <p>See <a href="/concepts/disposables/">Disposables concept</a> for patterns.</p>
+</Docs>

@@ -1,0 +1,38 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="View (pixi-reels)" description="The rendering surface, behind one presenter." eyebrow="Concept">
+  <p>
+    <code>src/view/</code> is the only layer (besides <code>presenters/</code>) that
+    imports <code>pixi.js</code> or <code>pixi-reels</code>. Everything else talks to
+    the view through <code>ReelsPresenter</code>.
+  </p>
+
+  <h2>Contents</h2>
+  <ul>
+    <li><code>scenes/MainScene.ts</code> — Pixi app lifecycle, creates the reel engine.</li>
+    <li><code>symbols/SpriteReelSymbol.ts</code> — default symbol class using Pixi sprites + GSAP.</li>
+    <li><code>symbols/SpineReelSymbol.ts</code> — optional Spine wrapper (stub; enable with peer dep).</li>
+    <li><code>symbols/SymbolAnimationPlayer.ts</code> — companion for Spine symbols (bonbon-hw pattern).</li>
+    <li><code>symbols/SymbolFactory.ts</code> — picks sprite vs spine per symbol id.</li>
+    <li><code>overlays/</code> — payline renderers, bigwin, anticipation glows.</li>
+  </ul>
+
+  <h2>Wiring pixi-reels</h2>
+  <p>
+    <code>MainScene.createReelsEngine()</code> is where you call <code>new ReelSetBuilder(app)</code>.
+    The builder's fluent API lets you configure columns, rows, symbols, middleware, and
+    spotlight in one chain. See the <a href="/guides/add-symbol/">Add a symbol</a> guide
+    for concrete wiring.
+  </p>
+
+  <h2>What goes in view vs presenter</h2>
+  <ul>
+    <li><strong>view/</strong>: Pixi objects, display tree, rendering, texture/animation lifecycle.</li>
+    <li><strong>presenter/</strong>: "when state changes, call these view methods."</li>
+  </ul>
+  <p>
+    The test: can a presenter's API be re-implemented over a totally different renderer
+    (Phaser, Canvas2D, Three.js)? If yes, the boundary is in the right place.
+  </p>
+</Docs>

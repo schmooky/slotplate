@@ -1,0 +1,71 @@
+---
+import DiagramFrame from '../../components/arch/DiagramFrame.astro';
+import LayerStackDiagram from '../../components/arch/LayerStackDiagram.astro';
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs
+  title="What is slotplate?"
+  description="An opinionated client boilerplate for slot games built on pixi-reels."
+  eyebrow="Start here"
+>
+  <p>
+    slotplate is a <strong>client</strong>. It is the presentation and flow layer of a slot
+    game: it renders reels, runs the FSM that orchestrates a spin, animates wins, drives
+    the HUD, plays sound. It is not a game server. It does not compute wins, does not
+    hold the paytable, does not run the RNG, does not certify RTP.
+  </p>
+
+  <p>
+    It's shaped deliberately. Every choice here is a bet that a specific failure mode
+    will not happen to your codebase: no silent timers, no bespoke reel engine, no
+    paytable in TypeScript that math never audits, no two stores writing to each other.
+  </p>
+
+  <h2>What ships when you run <code>npm create slotplate</code></h2>
+
+  <ul>
+    <li>TypeScript project with Vite, MobX, GSAP, and <a href="https://github.com/schmooky/pixi-reels">pixi-reels</a> wired.</li>
+    <li>Composition root, tiny DI container, MobX <code>RootStore</code> (Balance, Data, UI).</li>
+    <li>A finite state machine with <code>idle</code>, <code>spin</code>, <code>stopSpin</code>, <code>winShow</code> phases — one file each.</li>
+    <li><code>ReelsPresenter</code> as the sole bridge to <code>pixi-reels</code>. Biome prevents other layers from importing it.</li>
+    <li><code>GsapTicker</code> — all scheduled calls go through it. Biome rejects raw <code>setTimeout</code>.</li>
+    <li>Sprite + optional Spine symbol wrappers. The Spine one follows the bonbon-hw <code>SymbolAnimationPlayer</code> pattern.</li>
+    <li><code>MockNetworkManager</code> producing plausible <code>SpinResponse</code>s — swap for your RGS transport in one file.</li>
+    <li><code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>.claude/commands/</code> — agent rules committed in the template.</li>
+    <li>Vitest with real phase + store tests. No canvas required.</li>
+  </ul>
+
+  <h2>The shape</h2>
+  <DiagramFrame caption="One layer per folder. Downward imports only. The domain folder holds only the wire types that cross the network boundary.">
+    <LayerStackDiagram />
+  </DiagramFrame>
+
+  <h2>What slotplate is NOT</h2>
+  <ul>
+    <li>A game server. Your RGS is the server. If you don't have one, build one separately.</li>
+    <li>A math tool. RTP harnesses, volatility analysis, and paytable certification live on the server.</li>
+    <li>A UI framework. The HUD is plain DOM. Swap in React / Vue / Svelte as needed.</li>
+    <li>A monorepo template. One game per repo — monorepos are a cost that most slot teams don't need.</li>
+  </ul>
+
+  <h2>Who it's for</h2>
+  <ul>
+    <li>Teams starting a new slot client and want the architecture decision made for them.</li>
+    <li>Existing slot codebases that want a reference shape to refactor toward.</li>
+    <li>Anyone editing slot code with an AI agent — the Biome rules + CLAUDE.md keep the agent on-spec.</li>
+  </ul>
+
+  <Opinion>
+    Opinionated boilerplates are load-bearing. "Unopinionated" = "we left the hard choices for you."
+    slotplate makes the choices that, in practice, you'd make six months in anyway.
+  </Opinion>
+
+  <h2>Next</h2>
+  <ul>
+    <li><a href="/docs/quickstart/">Quickstart</a> — zero to running client.</li>
+    <li><a href="/docs/tour/">10-minute tour</a> — guided walk through the generated code.</li>
+    <li><a href="/architecture/">Architecture</a> — diagrams for every concept.</li>
+    <li><a href="/docs/principles/">The 10 principles</a> — the rules.</li>
+  </ul>
+</Docs>

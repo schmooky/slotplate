@@ -1,0 +1,44 @@
+---
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Fail loud" description="Errors you see on day one are cheap." eyebrow="Concept">
+  <p>
+    Throw when something is wrong. Never catch-and-ignore. Never fall back to a hidden
+    default. Never silence the type system without comment.
+  </p>
+
+  <h2>Forbidden</h2>
+  <pre><code>{`// ❌ Silent catch
+try { risky(); } catch {}
+
+// ❌ Silent fallback — now you never discover config drift
+const bet = config.defaultBet ?? 1;
+
+// ❌ Type lie without reason
+const x = response as any;`}</code></pre>
+
+  <h2>Allowed</h2>
+  <pre><code>{`// ✅ Throw with who/what/where
+if (!config.defaultBet) {
+  throw new Error('[composition] missing defaultBet — set in src/config/gameConfig.ts');
+}
+
+// ✅ Explicit, explained escape hatch
+// The spine-pixi-v8 types lag the runtime by a version.
+// Remove once https://github.com/.../issue-123 lands.
+const spine = instance as unknown as SpineWithMissingField;`}</code></pre>
+
+  <h2>Why</h2>
+  <p>
+    Silent failures produce a worst-case pattern: the code looks fine in PR review,
+    passes tests, ships — and starts misbehaving in week four, when the diff is cold and
+    the person who wrote it has moved on. A thrown error in week one is a commit away
+    from a fix. A silent divergence in week four is an incident.
+  </p>
+
+  <Opinion>
+    Silent failures are the #1 way AI-written code rots in production. LLMs are trained
+    on a lot of catch-and-continue. Your lint and your review must push back.
+  </Opinion>
+</Docs>

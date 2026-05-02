@@ -1,8 +1,0 @@
-*.js
-*.cjs
-*.mjs
-*.d.ts
-*.test.ts
-*.d.mts
-vite.config.ts
-docs

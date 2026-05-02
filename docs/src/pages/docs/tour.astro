@@ -1,0 +1,108 @@
+---
+import DiagramFrame from '../../components/arch/DiagramFrame.astro';
+import LayerStackDiagram from '../../components/arch/LayerStackDiagram.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="10-minute tour" eyebrow="Start here"
+  description="A guided walk through the generated client, in reading order.">
+
+  <p>
+    You've run <code>npm create slotplate my-slot</code> and <code>pnpm dev</code>.
+    Open the project. Here's what's inside, in the order it makes sense to read.
+  </p>
+
+  <h2>1. The composition root</h2>
+  <p>
+    Open <code>src/composition.ts</code> first. It's the only file that says
+    <code>new Foo()</code> for a service. Everything else receives its dependencies.
+    Reading this file top to bottom tells you what the app is made of and how the
+    pieces connect.
+  </p>
+
+  <h2>2. The FSM and phases</h2>
+  <p>
+    <code>src/flow/fsm.ts</code> is ~50 lines of finite state machine. Phases live in
+    <code>src/flow/phases/*.ts</code>, one file each. Each phase has
+    <code>enter(ctx)</code> and optional <code>skip()</code> / <code>exit()</code>.
+  </p>
+  <p>
+    Read <code>SpinPhase.ts</code> — ten lines, three responsibilities:
+    debit the bet, kick off reels + network in parallel, transition to
+    <code>stopSpin</code> when the server responds. The client doesn't evaluate
+    anything. It passes the server's answer along.
+  </p>
+
+  <h2>3. The wire types</h2>
+  <p>
+    <code>src/domain/types.ts</code> is every shape that crosses the network
+    boundary: <code>SpinRequest</code>, <code>SpinResponse</code>, <code>Grid</code>,
+    <code>Winline</code>. Deliberately small. No <code>evaluateWin</code>. No paytable.
+    Biome rejects any import of <code>pixi-reels</code>, <code>mobx</code>, or outer
+    layers from this folder.
+  </p>
+
+  <h2>4. The stores</h2>
+  <p>
+    <code>src/state/RootStore.ts</code> composes three stores:
+  </p>
+  <ul>
+    <li><code>BalanceStore</code> — balance, bet, lastWin + actions to mutate.</li>
+    <li><code>DataStore</code> — the last <code>SpinResponse</code>, decoded.</li>
+    <li><code>UIStore</code> — spin/stop enabled flags, speed mode.</li>
+  </ul>
+  <p>
+    Presenters observe stores via MobX <code>autorun</code>. Phases mutate stores
+    through action methods. No cross-store writes; a phase orchestrates any
+    cross-store change.
+  </p>
+
+  <h2>5. The ticker</h2>
+  <p>
+    <code>src/infrastructure/timing.ts</code> defines <code>Ticker</code> with
+    <code>schedule</code>, <code>every</code>, <code>nextFrame</code>. All three
+    return a <code>Disposable</code> so the owner can cancel on phase exit without
+    remembering handles.
+  </p>
+  <p>
+    Look at <code>WinShowPhase.enter</code>. It holds the win for 1.5 seconds via
+    <code>ctx.ticker.schedule(1500, () =&gt; ctx.fsm.transition('idle'))</code>.
+    Not <code>setTimeout</code>. That's principle #2 in action.
+  </p>
+
+  <h2>6. The view boundary</h2>
+  <p>
+    <code>src/presenters/ReelsPresenter.ts</code> is the one class outside <code>view/</code>
+    that touches <code>pixi-reels</code>. Everything else goes through it.
+    <code>MainScene.ts</code> lives in <code>view/</code> and is where you wire
+    <code>ReelSetBuilder</code>. Everywhere else, Biome rejects the import.
+  </p>
+
+  <h2>7. The HUD</h2>
+  <p>
+    <code>index.html</code> has three HTML elements: <code>#spin</code>, <code>#stop</code>,
+    <code>#balance</code>. <code>HUDPresenter</code> binds MobX state to them via
+    <code>autorun</code>. Swap for React/Vue/Svelte when you're ready — the
+    presenter contract stays the same.
+  </p>
+
+  <h2>8. The agent setup</h2>
+  <p>
+    <code>CLAUDE.md</code>, <code>AGENTS.md</code>, and <code>.claude/commands/</code>
+    are committed in the template. Your agent loads them automatically (Claude Code)
+    or via <code>AGENTS.md</code> / <code>llms.txt</code> (others). The principles are
+    the same whether a human or an agent edits the code.
+  </p>
+
+  <h2>The big picture</h2>
+  <DiagramFrame caption="Everything you just read about, in one frame.">
+    <LayerStackDiagram />
+  </DiagramFrame>
+
+  <h2>Where to go next</h2>
+  <ul>
+    <li><a href="/docs/principles/">The 10 principles</a> — the rules, distilled.</li>
+    <li><a href="/architecture/">Architecture</a> — more diagrams, deeper explanation.</li>
+    <li><a href="/guides/add-symbol/">Add your first symbol</a>.</li>
+    <li><a href="/guides/swap-network/">Wire your real RGS</a>.</li>
+  </ul>
+</Docs>

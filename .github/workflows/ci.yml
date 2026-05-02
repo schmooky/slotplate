@@ -1,0 +1,53 @@
+name: CI
+
+# PR + push gate. Runs on every push to main and every pull request:
+#   - install
+#   - build the docs site (validates Astro pages parse + integrations resolve)
+#   - smoke-test the create-slotplate CLI by scaffolding into a temp dir
+#
+# The template's own test suite (typecheck, vitest, Playwright) runs in
+# template/.github/workflows/scenarios.yml — that workflow is on a path filter
+# so it only fires when template/ changes.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build docs
+        run: pnpm build
+
+      - name: Smoke-test the CLI
+        run: |
+          OUT=$(mktemp -d)/slotplate-cli-smoke
+          node ./bin.js "$OUT" --yes
+          test -f "$OUT/package.json" || { echo "::error::CLI did not produce package.json"; exit 1; }
+          test -d "$OUT/src" || { echo "::error::CLI did not copy template/src"; exit 1; }
+          test -d "$OUT/tests/scenarios" || { echo "::error::CLI did not copy tests/scenarios"; exit 1; }
+          echo "Scaffolded successfully into $OUT"

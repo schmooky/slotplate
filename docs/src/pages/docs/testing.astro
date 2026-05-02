@@ -1,0 +1,91 @@
+---
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import Docs from '../../layouts/Docs.astro';
+
+// Single source of truth: template/docs/TESTING.md ships with the scaffolded
+// project. The docs site reads it at build time so the long-form guide doesn't
+// drift between scaffold output and slotplate.dev.
+
+const __filename = fileURLToPath(import.meta.url);
+const ROOT = join(dirname(__filename), '..', '..', '..', '..');
+const SOURCE = join(ROOT, 'template', 'docs', 'TESTING.md');
+const raw = readFileSync(SOURCE, 'utf8');
+
+// Strip the leading "# Testing slotplate" + first paragraph — we render
+// our own H1 via the layout's title prop and don't need the doubled
+// heading. Everything from the first "##" onward is the body.
+const firstH2 = raw.indexOf('\n## ');
+const body = firstH2 >= 0 ? raw.slice(firstH2 + 1) : raw;
+
+// Minimal markdown → HTML — same renderer as /changelog. Keeps the page
+// dep-free. Headings, lists, code, links, bold, italic, tables.
+function md(src: string): string {
+  let out = src.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // Pipe-style tables (rough — handles header + body rows separated by `|---|`).
+  out = out.replace(/(^\|.+\|\n\|[-: |]+\|\n(?:\|.+\|\n?)+)/gm, (match) => {
+    const lines = match.trim().split('\n');
+    const headerCells = lines[0]
+      .slice(1, -1)
+      .split('|')
+      .map((s) => s.trim());
+    const rows = lines.slice(2).map((line) =>
+      line
+        .slice(1, -1)
+        .split('|')
+        .map((s) => s.trim()),
+    );
+    const head = `<thead><tr>${headerCells.map((h) => `<th>${h}</th>`).join('')}</tr></thead>`;
+    const tbody = `<tbody>${rows.map((cells) => `<tr>${cells.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>`;
+    return `<table>${head}${tbody}</table>`;
+  });
+
+  // Code fences
+  out = out.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
+    const cls = lang ? ` class="language-${lang}"` : '';
+    return `<pre><code${cls}>${code.replace(/\n$/, '')}</code></pre>`;
+  });
+  out = out.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  out = out.replace(/^###### (.*)$/gm, '<h6>$1</h6>');
+  out = out.replace(/^##### (.*)$/gm, '<h5>$1</h5>');
+  out = out.replace(/^#### (.*)$/gm, '<h4>$1</h4>');
+  out = out.replace(/^### (.*)$/gm, '<h3>$1</h3>');
+  out = out.replace(/^## (.*)$/gm, '<h2>$1</h2>');
+  out = out.replace(/^# (.*)$/gm, '<h1>$1</h1>');
+  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" rel="noopener">$1</a>');
+  out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  out = out.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+  // Horizontal rule
+  out = out.replace(/^---+$/gm, '<hr />');
+  // Bullets
+  out = out.replace(/^(?:- |\* )(.*)$/gm, '<li>$1</li>');
+  out = out.replace(/(?:<li>[\s\S]*?<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`);
+  // Paragraphs
+  out = out
+    .split(/\n{2,}/)
+    .map((para) => {
+      const trim = para.trim();
+      if (!trim) return '';
+      if (/^<(h\d|ul|pre|p|table|hr)/.test(trim)) return trim;
+      return `<p>${trim.replace(/\n/g, ' ')}</p>`;
+    })
+    .join('\n');
+  return out;
+}
+
+const html = md(body);
+---
+<Docs
+  eyebrow="Testing"
+  title="Behavior scenarios + test bridge"
+  description="Drive the live game from Playwright. Script every server response, simulate offline, click Pixi nodes by label, record sessions, and replay server logs."
+>
+  <Fragment set:html={html} />
+
+  <div class="mt-12 rounded-lg border border-border/40 bg-secondary/30 p-5 text-sm">
+    <strong class="block mb-1">Where this lives</strong>
+    This page is generated at build time from <code class="rounded bg-secondary px-1.5 py-0.5 font-mono text-xs">template/docs/TESTING.md</code> in the slotplate repo. The same file ships into your scaffolded project as <code class="rounded bg-secondary px-1.5 py-0.5 font-mono text-xs">docs/TESTING.md</code>. Edits land in both places automatically.
+  </div>
+</Docs>

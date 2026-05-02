@@ -1,0 +1,53 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Analytics events" description="Instrumenting the FSM without coupling it to a vendor." eyebrow="How-to">
+  <p>
+    <code>src/infrastructure/Analytics.ts</code> is a small interface:
+  </p>
+  <pre><code>{`interface Analytics {
+  track(event: string, payload?: Record<string, unknown>): void;
+}`}</code></pre>
+  <p>
+    Swap <code>ConsoleAnalytics</code> for your vendor (Segment, Amplitude, GA4) in
+    <code>composition.ts</code>. Emit events from <em>phase handlers</em> — they're the
+    natural event boundaries.
+  </p>
+
+  <h2>Where to emit</h2>
+  <pre><code>{`// SpinPhase.enter
+ctx.analytics.track('spin_requested', { bet: ctx.stores.balance.bet });
+
+// WinShowPhase.enter
+if (winlines.length > 0) {
+  ctx.analytics.track('win_shown', {
+    totalWin,
+    lineCount: winlines.length,
+  });
+}`}</code></pre>
+
+  <h2>Where NOT to emit</h2>
+  <ul>
+    <li><strong>Not from presenters.</strong> They fire on MobX reactions — too many duplicates.</li>
+    <li><strong>Not from the view.</strong> Too deep in the tree — hard to trace causality.</li>
+    <li><strong>Not from stores.</strong> Stores should be pure data, no side effects.</li>
+  </ul>
+
+  <h2>What to track</h2>
+  <ul>
+    <li>Round lifecycle: spin requested, response received, wins shown, round complete.</li>
+    <li>User intent: bet changed, speed changed, skip pressed.</li>
+    <li>Errors: network timeouts, malformed responses, unexpected state transitions.</li>
+  </ul>
+
+  <h2>What NOT to track (client-side)</h2>
+  <ul>
+    <li>Win amounts per se — the server has the authoritative data.</li>
+    <li>Paytable-derived metrics — you don't have the paytable.</li>
+    <li>RTP — server-side certification.</li>
+  </ul>
+
+  <p>
+    The client emits <em>user behavior</em> events; the server emits <em>money/outcome</em> events.
+  </p>
+</Docs>

@@ -1,0 +1,16 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Finite state machine" description="Named phases with enter/skip/exit." eyebrow="Pattern">
+  <p><strong>Where:</strong> <code>src/flow/fsm.ts</code>, <code>src/flow/phases/</code>.</p>
+  <p>
+    <strong>The rule:</strong> the game is a set of named phases. Transitions are explicit.
+    Each phase has <code>enter(ctx)</code>, optional <code>skip(ctx)</code>, optional <code>exit(ctx)</code>.
+  </p>
+  <p>
+    <strong>Why a machine, not flags:</strong> flags like <code>isSpinning</code>, <code>canStop</code>,
+    <code>showingWin</code> multiply until you can't reason about them. A machine has one
+    current state; transitions are auditable.
+  </p>
+  <p>See <a href="/architecture/fsm/">FSM & phases</a> for the full treatment.</p>
+</Docs>

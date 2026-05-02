@@ -1,0 +1,74 @@
+---
+import DiagramFrame from '../../components/arch/DiagramFrame.astro';
+import FsmDiagram from '../../components/arch/FsmDiagram.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Add a phase" description="Adding a new FSM phase (anticipation, bonus, big-win)." eyebrow="How-to">
+  <DiagramFrame title="The default FSM" caption="You're extending this. New phases go between existing transitions.">
+    <FsmDiagram />
+  </DiagramFrame>
+
+  <h2>Short version</h2>
+  <pre><code>/add-phase AnticipationPhase</code></pre>
+
+  <h2>Long version</h2>
+  <ol>
+    <li>
+      <strong>Create the file.</strong> <code>src/flow/phases/AnticipationPhase.ts</code>:
+      <pre><code>{`import type { Phase, PhaseContext } from '../Phase';
+
+export class AnticipationPhase implements Phase {
+  readonly name = 'anticipation';
+
+  async enter(ctx: PhaseContext) {
+    const teasers = ctx.stores.data.teasingReels;
+    ctx.reels.setAnticipation(teasers);
+    // wait for the anticipation animation to settle, then advance
+    await ctx.fsm.transition('stopSpin');
+  }
+
+  exit() { /* dispose anything this phase allocated */ }
+}`}</code></pre>
+    </li>
+    <li>
+      <strong>Register.</strong> In <code>src/composition.ts</code>, add
+      <code>fsm.register(new AnticipationPhase())</code> alongside the others.
+    </li>
+    <li>
+      <strong>Wire the transition in.</strong> Whichever phase <em>precedes</em> this one
+      now transitions to it. For anticipation, that's probably <code>SpinPhase</code> —
+      instead of going straight to <code>stopSpin</code>, it goes to <code>anticipation</code>
+      when the server returns <code>teasingReels</code>.
+    </li>
+    <li>
+      <strong>Test it.</strong> <code>tests/flow/AnticipationPhase.test.ts</code> — instantiate the
+      phase, mock the context, call <code>enter</code>, assert the presenter was called
+      and the FSM transitioned.
+    </li>
+    <li>
+      <strong>Run:</strong> <code>pnpm typecheck && pnpm test && pnpm lint</code>.
+    </li>
+  </ol>
+
+  <h2>Don't</h2>
+  <ul>
+    <li>Call <code>setTimeout</code> inside the phase. Use <code>ctx.ticker.schedule</code>.</li>
+    <li>Import <code>pixi-reels</code>. Talk to <code>ctx.reels</code> (the presenter).</li>
+    <li>Loop inside the phase. Transition out and back in (or split into two phases).</li>
+    <li>Call another phase's <code>enter</code> directly. Use <code>ctx.fsm.transition</code>.</li>
+  </ul>
+
+  <h2>The <code>skip</code> method</h2>
+  <p>
+    Implement <code>skip()</code> if the user should be able to short-circuit this phase
+    (Turbo / SuperTurbo). Usually that means "cancel the pending ticker handle and
+    transition immediately." See <code>WinShowPhase.skip</code> for the canonical shape.
+  </p>
+
+  <h2>The <code>exit</code> method</h2>
+  <p>
+    Implement <code>exit()</code> if the phase holds timers, event listeners, or transient
+    state. Called before the next phase's <code>enter</code> — and also on FSM teardown.
+    Make it idempotent.
+  </p>
+</Docs>

@@ -1,0 +1,55 @@
+---
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Swap the network transport" description="Replace the mock with your RGS client in one file." eyebrow="How-to">
+  <p>
+    slotplate ships with <code>MockNetworkManager</code> (random grids, 300ms latency).
+    Real games talk to an RGS over WebSocket or HTTPS.
+  </p>
+
+  <h2>The interface</h2>
+  <pre><code>{`export interface NetworkManager {
+  spin(req: SpinRequest): Promise<SpinResponse>;
+}`}</code></pre>
+  <p>
+    That's it. Write your own class, register it in <code>composition.ts</code>:
+  </p>
+  <pre><code>{`container.register<NetworkManager>(
+  'network',
+  () => new RgsNetworkManager(config.rgsUrl, config.sessionToken),
+);`}</code></pre>
+  <p>
+    Nothing else in the codebase knows about the transport. Phases call
+    <code>network.spin(...)</code>; the return type is the same. No other change needed.
+  </p>
+
+  <h2>What goes in the real implementation</h2>
+  <ul>
+    <li><strong>Session handshake / authentication.</strong> Usually a one-time call on app boot; store the token in <code>infrastructure</code>, not in a MobX store.</li>
+    <li><strong>Request/response logging</strong> for support tickets. Log correlation IDs so you can trace a spin end-to-end.</li>
+    <li><strong>Retry on transient errors.</strong> Finite retries with backoff. Throw loud after N attempts — do not silently return an empty response.</li>
+    <li><strong>Schema validation.</strong> Don't trust the payload shape. Parse it (Zod, io-ts, hand-rolled) at the boundary and throw if malformed.</li>
+  </ul>
+
+  <h2>What does NOT go here</h2>
+  <ul>
+    <li>Game rules. The server enforces them; the client doesn't recompute.</li>
+    <li>UI state. <code>NetworkManager</code> is infrastructure — it doesn't touch <code>UIStore</code>.</li>
+    <li>Paytable caching. If you need the paytable on the client (for tooltips), serve it as a separate endpoint.</li>
+  </ul>
+
+  <Opinion>
+    Keep provider-specific code in one file. If you ship to two providers, write two
+    <code>NetworkManager</code> classes, not one with <code>if (provider === 'X')</code>
+    branches. The branches will multiply; the boundary between them will become load-bearing.
+  </Opinion>
+
+  <h2>Testing</h2>
+  <p>
+    Phase tests use a mock <code>NetworkManager</code> via <code>vi.fn()</code> — see
+    <code>tests/flow/SpinPhase.test.ts</code>. For integration with the real server,
+    use a dev seed if your RGS supports it. Otherwise, mock at the <code>NetworkManager</code>
+    boundary only — don't mock deeper.
+  </p>
+</Docs>

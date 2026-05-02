@@ -1,0 +1,126 @@
+---
+// Mile-high layer stack. Top to bottom = outer to inner. Arrows show allowed
+// import direction (downward only). Client/server split is shown on the side.
+---
+<svg viewBox="0 0 880 620" class="w-full h-auto max-h-[720px]" role="img" aria-label="slotplate layer architecture diagram">
+  <defs>
+    <linearGradient id="primaryGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="hsl(22 92% 52%)" />
+      <stop offset="100%" stop-color="hsl(36 100% 50%)" />
+    </linearGradient>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="hsl(22 92% 52%)" />
+    </marker>
+    <marker id="arrowMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="hsl(24 25% 70%)" />
+    </marker>
+  </defs>
+
+  <!-- Outer frame — the client -->
+  <rect x="20" y="20" width="620" height="580" rx="20" fill="hsl(30 35% 99%)" stroke="hsl(24 25% 85%)" stroke-dasharray="6,5" stroke-width="1.5" />
+  <text x="40" y="48" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="700" fill="hsl(22 92% 52%)" letter-spacing="0.14em">
+    SLOTPLATE · CLIENT
+  </text>
+
+  <!-- UI layer -->
+  <rect x="60" y="72" width="540" height="52" rx="10" fill="hsl(26 30% 96%)" stroke="hsl(24 25% 85%)" />
+  <text x="78" y="93" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="hsl(20 20% 12%)">UI</text>
+  <text x="78" y="111" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="hsl(20 10% 40%)">plain DOM · optional React/Vue</text>
+
+  <!-- Scenes -->
+  <rect x="60" y="138" width="540" height="52" rx="10" fill="hsl(26 30% 96%)" stroke="hsl(24 25% 85%)" />
+  <text x="78" y="159" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="hsl(20 20% 12%)">scenes</text>
+  <text x="78" y="177" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="hsl(20 10% 40%)">Pixi application lifecycle · mounts pixi-reels</text>
+
+  <!-- Flow / FSM (highlighted — owns time) -->
+  <rect x="60" y="204" width="540" height="70" rx="12" fill="url(#primaryGrad)" stroke="hsl(22 92% 45%)" stroke-width="2" />
+  <text x="78" y="228" font-family="Inter, sans-serif" font-size="14" font-weight="800" fill="white">flow · FSM + phase handlers</text>
+  <text x="78" y="248" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="white" opacity="0.9">idle → spin → stopSpin → winShow → idle</text>
+  <text x="78" y="265" font-family="ui-monospace, Menlo, monospace" font-size="10" fill="white" opacity="0.8">owns GAME TIME · only writer to stores</text>
+
+  <!-- Presenters + Infrastructure row -->
+  <rect x="60" y="288" width="260" height="66" rx="10" fill="hsl(0 0% 100%)" stroke="hsl(24 25% 85%)" />
+  <text x="78" y="310" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="hsl(20 20% 12%)">presenters</text>
+  <text x="78" y="328" font-family="ui-monospace, Menlo, monospace" font-size="10.5" fill="hsl(20 10% 40%)">ReelsPresenter · HUDPresenter</text>
+  <text x="78" y="343" font-family="ui-monospace, Menlo, monospace" font-size="10.5" fill="hsl(22 92% 52%)">state → view</text>
+
+  <rect x="340" y="288" width="260" height="66" rx="10" fill="hsl(0 0% 100%)" stroke="hsl(24 25% 85%)" />
+  <text x="358" y="310" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="hsl(20 20% 12%)">infrastructure</text>
+  <text x="358" y="328" font-family="ui-monospace, Menlo, monospace" font-size="10.5" fill="hsl(20 10% 40%)">Ticker · Network · AssetLoader · Analytics</text>
+  <text x="358" y="343" font-family="ui-monospace, Menlo, monospace" font-size="10.5" fill="hsl(22 92% 52%)">I/O boundary</text>
+
+  <!-- State -->
+  <rect x="60" y="368" width="540" height="52" rx="10" fill="hsl(26 30% 96%)" stroke="hsl(24 25% 85%)" />
+  <text x="78" y="389" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="hsl(20 20% 12%)">state · MobX</text>
+  <text x="78" y="407" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="hsl(20 10% 40%)">RootStore = Balance + Data + UI</text>
+
+  <!-- Domain (wire types only) -->
+  <rect x="60" y="434" width="540" height="52" rx="10" fill="hsl(36 100% 96%)" stroke="hsl(36 80% 75%)" />
+  <text x="78" y="455" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="hsl(20 20% 12%)">domain · WIRE TYPES ONLY</text>
+  <text x="78" y="473" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="hsl(20 10% 40%)">SpinRequest · SpinResponse · Grid · Winline</text>
+
+  <!-- Config -->
+  <rect x="60" y="500" width="540" height="52" rx="10" fill="hsl(26 30% 96%)" stroke="hsl(24 25% 85%)" />
+  <text x="78" y="521" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="hsl(20 20% 12%)">config</text>
+  <text x="78" y="539" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="hsl(20 10% 40%)">columns · rows · symbolIds (client-side only)</text>
+
+  <!-- Import arrows: downward flow -->
+  <line x1="330" y1="124" x2="330" y2="134" stroke="hsl(24 25% 70%)" stroke-width="2" marker-end="url(#arrowMuted)" />
+  <line x1="330" y1="190" x2="330" y2="200" stroke="hsl(24 25% 70%)" stroke-width="2" marker-end="url(#arrowMuted)" />
+  <line x1="330" y1="274" x2="330" y2="284" stroke="hsl(24 25% 70%)" stroke-width="2" marker-end="url(#arrowMuted)" />
+  <line x1="330" y1="354" x2="330" y2="364" stroke="hsl(24 25% 70%)" stroke-width="2" marker-end="url(#arrowMuted)" />
+  <line x1="330" y1="420" x2="330" y2="430" stroke="hsl(24 25% 70%)" stroke-width="2" marker-end="url(#arrowMuted)" />
+  <line x1="330" y1="486" x2="330" y2="496" stroke="hsl(24 25% 70%)" stroke-width="2" marker-end="url(#arrowMuted)" />
+
+  <!-- Label for arrow direction -->
+  <text x="580" y="588" font-family="ui-monospace, Menlo, monospace" font-size="10" fill="hsl(20 10% 40%)" text-anchor="end">
+    ↓ import direction (enforced by Biome)
+  </text>
+
+  <!-- Server side — separate column -->
+  <rect x="680" y="20" width="180" height="580" rx="20" fill="hsl(0 60% 98%)" stroke="hsl(0 40% 80%)" stroke-dasharray="6,5" stroke-width="1.5" />
+  <text x="700" y="48" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="700" fill="hsl(0 70% 45%)" letter-spacing="0.14em">
+    SERVER (RGS)
+  </text>
+  <text x="700" y="68" font-family="ui-monospace, Menlo, monospace" font-size="10" fill="hsl(0 40% 40%)">not slotplate</text>
+
+  <rect x="700" y="90" width="140" height="44" rx="8" fill="hsl(0 0% 100%)" stroke="hsl(0 40% 80%)" />
+  <text x="770" y="116" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="hsl(0 70% 45%)">paytable</text>
+
+  <rect x="700" y="146" width="140" height="44" rx="8" fill="hsl(0 0% 100%)" stroke="hsl(0 40% 80%)" />
+  <text x="770" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="hsl(0 70% 45%)">reelstrips</text>
+
+  <rect x="700" y="202" width="140" height="44" rx="8" fill="hsl(0 0% 100%)" stroke="hsl(0 40% 80%)" />
+  <text x="770" y="228" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="hsl(0 70% 45%)">RNG + spin eval</text>
+
+  <rect x="700" y="258" width="140" height="44" rx="8" fill="hsl(0 0% 100%)" stroke="hsl(0 40% 80%)" />
+  <text x="770" y="284" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="hsl(0 70% 45%)">RTP / math</text>
+
+  <rect x="700" y="314" width="140" height="44" rx="8" fill="hsl(0 0% 100%)" stroke="hsl(0 40% 80%)" />
+  <text x="770" y="340" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="hsl(0 70% 45%)">balance (truth)</text>
+
+  <!-- Arrow from server to infrastructure (network) -->
+  <path d="M 700 315 Q 640 315 600 320" stroke="hsl(22 92% 52%)" stroke-width="2" fill="none" marker-end="url(#arrowOrange)" />
+  <text x="645" y="308" font-family="ui-monospace, Menlo, monospace" font-size="9" fill="hsl(22 92% 52%)" text-anchor="middle">SpinResponse</text>
+
+  <!-- Caption box -->
+  <rect x="700" y="420" width="140" height="160" rx="8" fill="hsl(30 35% 99%)" stroke="hsl(0 40% 80%)" stroke-dasharray="2,3" />
+  <text x="770" y="442" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="10" font-weight="700" fill="hsl(0 70% 45%)">
+    The client
+  </text>
+  <text x="770" y="458" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="10" font-weight="700" fill="hsl(0 70% 45%)">
+    never computes
+  </text>
+  <text x="770" y="474" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="10" font-weight="700" fill="hsl(0 70% 45%)">
+    these.
+  </text>
+  <text x="770" y="502" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="hsl(0 50% 35%)">
+    It renders
+  </text>
+  <text x="770" y="518" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="hsl(0 50% 35%)">
+    what the server
+  </text>
+  <text x="770" y="534" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="hsl(0 50% 35%)">
+    said happened.
+  </text>
+</svg>

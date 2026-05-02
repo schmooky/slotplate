@@ -1,0 +1,86 @@
+---
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs
+  title="Quickstart"
+  description="From zero to a running client in two commands."
+  eyebrow="Start here"
+>
+  <h2>Scaffold</h2>
+  <pre><code>{`npm create slotplate my-slot
+cd my-slot
+pnpm install
+pnpm dev`}</code></pre>
+  <p>
+    Open <a href="http://localhost:5173">http://localhost:5173</a>. Click <strong>Spin</strong>.
+    You're watching the FSM run end-to-end: HUD click → transition → bet debit → parallel
+    reels-start + network — then result playback → winShow → idle.
+  </p>
+
+  <p>
+    The reels themselves are a <em>stub</em>. slotplate ships with a
+    <code>StubReelsEngine</code> so the FSM can boot before your assets are loaded. You'll
+    swap it for a real <code>ReelSetBuilder</code> call in <code>src/view/scenes/MainScene.ts</code>
+    once you have art.
+  </p>
+
+  <h2>What just booted</h2>
+  <p>The composition root (<code>src/composition.ts</code>) wired:</p>
+  <ol>
+    <li>A Pixi <code>Application</code> mounted in <code>#app</code>.</li>
+    <li>A MobX <code>RootStore</code> holding <code>balance</code>, <code>data</code>, <code>ui</code>.</li>
+    <li>The <code>FSM</code> with phases <code>idle</code>, <code>spin</code>, <code>stopSpin</code>, <code>winShow</code>.</li>
+    <li>A <code>HUDPresenter</code> binding the plain HTML buttons to FSM transitions.</li>
+    <li>A <code>MockNetworkManager</code> returning a random grid after 300 ms.</li>
+    <li>A <code>GsapTicker</code> synced to Pixi's ticker — no <code>setTimeout</code> leaks.</li>
+  </ol>
+
+  <Opinion>
+    The scaffolded client boots on empty assets by design. Don't wait until you have final
+    art to verify the flow. Get the FSM green first; swap in the view second.
+  </Opinion>
+
+  <h2>Next checkpoints</h2>
+  <ol>
+    <li>
+      <strong>Read <code>CLAUDE.md</code></strong> in the project root. The principles there
+      are hard rules, and Biome enforces them. You'll save yourself a lint-failure commit.
+    </li>
+    <li>
+      <strong>Wire pixi-reels properly.</strong>
+      Replace <code>StubReelsEngine</code> in <code>src/view/scenes/MainScene.ts</code> with a
+      real <code>ReelSetBuilder</code> call. See the <a href="/guides/add-symbol/">Add a symbol</a>
+      guide for the shape.
+    </li>
+    <li>
+      <strong>Swap the network transport.</strong>
+      <code>MockNetworkManager</code> is for dev only. Your real RGS goes in
+      <code>src/infrastructure/NetworkManager.ts</code>. Keep the interface; replace the class.
+      See <a href="/guides/swap-network/">Swap the network transport</a>.
+    </li>
+    <li>
+      <strong>Tune the HUD.</strong>
+      The default HUD is three DOM elements. Swap in React / Vue / Svelte when you're ready —
+      the presenter contract stays the same.
+    </li>
+    <li>
+      <strong>Run the tests.</strong>
+      <code>pnpm test</code>. The scaffolded project ships with real tests for the FSM and stores.
+    </li>
+  </ol>
+
+  <h2>Running commands</h2>
+  <pre><code>{`pnpm dev        # vite on :5173
+pnpm typecheck  # tsc --noEmit
+pnpm test       # vitest
+pnpm lint       # enforces the principles
+pnpm build      # static bundle in dist/`}</code></pre>
+
+  <h2>If something breaks</h2>
+  <ul>
+    <li>Build the project first with <code>pnpm install && pnpm typecheck</code> — catches dep mismatches.</li>
+    <li>Check the browser console. <code>__PIXI_REELS_DEBUG.log()</code> shows the reel state.</li>
+    <li>Use the <code>/loop</code> of TypeScript → lint → test as your editing rhythm.</li>
+  </ul>
+</Docs>

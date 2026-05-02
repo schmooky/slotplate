@@ -1,0 +1,110 @@
+---
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs
+  title="Using slotplate with AI agents"
+  description="Point any coding agent at your slotplate project and keep it on-spec."
+  eyebrow="AI-ready"
+>
+  <p>
+    slotplate is designed to be edited by AI agents as a first-class case.
+    Every principle has a lint rule. Every common task has a slash command.
+    Every concept has a docs page the agent can fetch.
+  </p>
+
+  <h2>The feeds</h2>
+  <ul>
+    <li>
+      <a href="/llms.txt"><code>/llms.txt</code></a> — terse machine-skimmable index, one
+      line per doc page. Good for routing queries.
+    </li>
+    <li>
+      <a href="/llms-full.txt"><code>/llms-full.txt</code></a> — the entire manual
+      concatenated. One fetch, everything. Paste into your agent at session start.
+    </li>
+  </ul>
+  <p>
+    Both regenerate on docs build. Point your agent at
+    <code>https://slotplate.dev/llms-full.txt</code> once per session and it has the full manual.
+  </p>
+
+  <h2>Claude Code</h2>
+  <p>
+    <code>CLAUDE.md</code> is committed to the template root. It codifies the 10 principles
+    as project rules. Slash commands live in <code>.claude/commands/</code>:
+  </p>
+  <pre><code>{`/add-symbol Cherry      # scaffolds a new ReelSymbol + tests + registration
+/add-phase BonusSpin    # scaffolds a new FSM phase`}</code></pre>
+  <p>
+    Open the project in Claude Code and the rules apply automatically.
+    <code>.claude/settings.json</code> pre-allows the common commands (<code>pnpm</code>,
+    <code>git status</code>, etc.) so you're not clicking "approve" for every step.
+  </p>
+
+  <h2>Cursor, Codex, Aider, Continue</h2>
+  <p>
+    <code>AGENTS.md</code> mirrors the principles for non-Claude agents. Point your agent at:
+  </p>
+  <ol>
+    <li><code>AGENTS.md</code> in the project root, or</li>
+    <li><code>https://slotplate.dev/llms-full.txt</code> for the full manual.</li>
+  </ol>
+  <p>
+    Cursor users: symlink <code>AGENTS.md</code> → <code>.cursor/rules/main.md</code> and
+    it loads automatically as a rule.
+  </p>
+
+  <h2>Recommended agent prompt</h2>
+  <pre><code>{`You are editing a slotplate project — an opinionated slot-game CLIENT
+boilerplate on pixi-reels. This is a client, not a server: no win
+evaluation, no paytable, no RTP here. The server returns resolved
+results; the client renders them.
+
+Read CLAUDE.md before making any changes. The 10 principles listed
+there are enforced by Biome; diffs that violate them will not pass.
+
+Key rules:
+- src/domain/ holds WIRE TYPES only — no evaluators, no pure math.
+- Use Ticker.schedule, never setTimeout.
+- Only src/view/ and src/presenters/ import pixi-reels.
+- Every FSM phase is a file in src/flow/phases/.
+- State mutates through MobX @action methods only.
+
+For anything not covered here, fetch
+https://slotplate.dev/llms-full.txt.`}</code></pre>
+
+  <h2>What the agent rules prevent</h2>
+  <ul>
+    <li>Creating a <code>src/domain/winEval.ts</code> because the agent "saw it in another slot repo."</li>
+    <li>Using <code>setTimeout</code> for win-display hold timing.</li>
+    <li>Importing <code>pixi.js</code> from a phase or store.</li>
+    <li>Silent <code>catch {}</code> around network errors.</li>
+    <li><code>as any</code> to silence the type system without a comment.</li>
+    <li>Writing a paytable JSON to "make the mock more realistic."</li>
+  </ul>
+
+  <p>
+    These are the failure modes of AI-edited slot code. slotplate encodes each as a lint
+    rule, a docs page, and a principle the agent reads at session start.
+  </p>
+
+  <Opinion>
+    An agent without project rules will drift toward average-repo patterns — service
+    locators in every file, <code>setTimeout</code> for animations, <code>as any</code>
+    to silence TS. slotplate's Biome config catches many of these, but the rules are
+    what prevent them from being written. Agent rules are not a replacement for lint —
+    they're the spec.
+  </Opinion>
+
+  <h2>Building on top</h2>
+  <p>
+    Add your own slash commands in <code>.claude/commands/</code>. Mirror them in
+    <code>AGENTS.md</code> so non-Claude agents know about them. The pattern:
+  </p>
+  <ol>
+    <li>Markdown file with a frontmatter <code>description</code> and <code>argument-hint</code>.</li>
+    <li>Body is a checklist the agent works through.</li>
+    <li>End with "run <code>pnpm typecheck && pnpm test && pnpm lint</code>" to loop on green.</li>
+  </ol>
+</Docs>

@@ -1,0 +1,89 @@
+---
+// Client/server responsibility split. The single most important diagram
+// in the slotplate docs — if you get this wrong, everything else breaks.
+---
+<svg viewBox="0 0 940 440" class="w-full h-auto max-h-[520px]" role="img" aria-label="Client vs server responsibility split">
+  <defs>
+    <marker id="csArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="hsl(22 92% 52%)" />
+    </marker>
+    <marker id="csArrowReturn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="hsl(36 100% 45%)" />
+    </marker>
+  </defs>
+
+  <!-- CLIENT box -->
+  <rect x="20" y="20" width="420" height="400" rx="18" fill="hsl(30 35% 99%)" stroke="hsl(22 92% 52%)" stroke-width="2" />
+  <text x="40" y="46" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="700" fill="hsl(22 92% 52%)" letter-spacing="0.16em">
+    CLIENT · slotplate
+  </text>
+  <text x="40" y="63" font-family="ui-monospace, Menlo, monospace" font-size="10" fill="hsl(20 10% 40%)">
+    presentation + flow
+  </text>
+
+  <!-- Client responsibilities -->
+  {[
+    { y: 90,  text: 'rendering reels', on: true },
+    { y: 118, text: 'animations, timing, skip', on: true },
+    { y: 146, text: 'HUD, bet input, sound', on: true },
+    { y: 174, text: 'FSM phase orchestration', on: true },
+    { y: 202, text: 'optimistic balance display', on: true },
+    { y: 230, text: 'request spin from server', on: true },
+    { y: 265, text: 'paytable logic', on: false },
+    { y: 293, text: 'RNG / stop positions', on: false },
+    { y: 321, text: 'win evaluation', on: false },
+    { y: 349, text: 'RTP / math certification', on: false },
+    { y: 377, text: 'balance truth', on: false },
+  ].map((r) => (
+    <>
+      <text x="66" y={r.y + 4} font-family="Inter, sans-serif" font-size="13" fill={r.on ? 'hsl(20 20% 12%)' : 'hsl(0 40% 60%)'} font-weight={r.on ? '500' : '400'} style={r.on ? '' : 'text-decoration:line-through'}>{r.text}</text>
+      {r.on
+        ? <path d={`M 42 ${r.y} l 6 6 l 12 -12`} stroke="hsl(140 60% 45%)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        : <path d={`M 42 ${r.y - 5} l 12 12 M 54 ${r.y - 5} l -12 12`} stroke="hsl(0 70% 50%)" stroke-width="2.5" stroke-linecap="round" />
+      }
+    </>
+  ))}
+
+  <!-- SERVER box -->
+  <rect x="500" y="20" width="420" height="400" rx="18" fill="hsl(0 60% 98%)" stroke="hsl(0 70% 50%)" stroke-width="2" />
+  <text x="520" y="46" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="700" fill="hsl(0 70% 45%)" letter-spacing="0.16em">
+    SERVER · RGS
+  </text>
+  <text x="520" y="63" font-family="ui-monospace, Menlo, monospace" font-size="10" fill="hsl(0 40% 40%)">
+    math + truth
+  </text>
+
+  {[
+    { y: 90,  text: 'paytable + payouts', on: true },
+    { y: 118, text: 'RNG + reelstrip lookup', on: true },
+    { y: 146, text: 'grid selection per spin', on: true },
+    { y: 174, text: 'win evaluation', on: true },
+    { y: 202, text: 'anticipation trigger rule', on: true },
+    { y: 230, text: 'bonus trigger decision', on: true },
+    { y: 258, text: 'balance authoritative state', on: true },
+    { y: 286, text: 'session lifecycle', on: true },
+    { y: 314, text: 'RTP certification', on: true },
+    { y: 349, text: 'rendering / animation', on: false },
+    { y: 377, text: 'sound / HUD / speed modes', on: false },
+  ].map((r) => (
+    <>
+      <text x="546" y={r.y + 4} font-family="Inter, sans-serif" font-size="13" fill={r.on ? 'hsl(20 20% 12%)' : 'hsl(22 40% 60%)'} font-weight={r.on ? '500' : '400'} style={r.on ? '' : 'text-decoration:line-through'}>{r.text}</text>
+      {r.on
+        ? <path d={`M 522 ${r.y} l 6 6 l 12 -12`} stroke="hsl(140 60% 45%)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        : <path d={`M 522 ${r.y - 5} l 12 12 M 534 ${r.y - 5} l -12 12`} stroke="hsl(22 70% 50%)" stroke-width="2.5" stroke-linecap="round" />
+      }
+    </>
+  ))}
+
+  <!-- Between: arrows -->
+  <g transform="translate(440 0)">
+    <path d="M 0 180 L 60 180" stroke="hsl(22 92% 52%)" stroke-width="2.5" marker-end="url(#csArrow)" />
+    <text x="30" y="172" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="10" font-weight="700" fill="hsl(22 92% 52%)">SpinRequest</text>
+    <text x="30" y="196" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="9" fill="hsl(22 92% 52%)" opacity="0.8">{'{ bet }'}</text>
+
+    <path d="M 60 250 L 0 250" stroke="hsl(36 100% 45%)" stroke-width="2.5" marker-end="url(#csArrowReturn)" />
+    <text x="30" y="242" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="10" font-weight="700" fill="hsl(36 100% 35%)">SpinResponse</text>
+    <text x="30" y="266" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="9" fill="hsl(36 100% 35%)" opacity="0.8">grid, winlines,</text>
+    <text x="30" y="279" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="9" fill="hsl(36 100% 35%)" opacity="0.8">totalWin, teasingReels</text>
+  </g>
+</svg>

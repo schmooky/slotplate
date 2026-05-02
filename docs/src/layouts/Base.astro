@@ -1,0 +1,47 @@
+---
+import Footer from '../components/Footer.astro';
+import Nav from '../components/Nav.astro';
+import SearchModal from '../components/SearchModal.astro';
+import '../styles/global.css';
+import { OG_PAGES } from '../lib/og-pages';
+import { SITE } from '../lib/seo';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title = `${SITE.name} — ${SITE.tagline}`, description = SITE.description } = Astro.props as Props;
+
+// Per-page OG image. Pages enumerated in OG_PAGES get a generated PNG at
+// /og/<route>.png; everything else falls back to /og-default.png.
+const cleanPath = Astro.url.pathname.replace(/^\//, '').replace(/\/$/, '');
+const ogKey = cleanPath || 'index';
+const ogImage = OG_PAGES[ogKey] ? `/og/${ogKey}.png` : '/og-default.png';
+const ogImageAbsolute = new URL(ogImage, SITE.url).toString();
+const canonical = new URL(Astro.url.pathname, SITE.url).toString();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageAbsolute} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImageAbsolute} />
+    <link rel="canonical" href={canonical} />
+  </head>
+  <body>
+    <Nav />
+    <main><slot /></main>
+    <Footer />
+    <SearchModal />
+  </body>
+</html>

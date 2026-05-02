@@ -1,0 +1,15 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Object pool" description="Recycling symbols to avoid GC pressure." eyebrow="Pattern">
+  <p><strong>Where:</strong> <code>pixi-reels</code>' <code>ObjectPool&lt;T&gt;</code>.</p>
+  <p>
+    <strong>The rule:</strong> symbols, frame contexts, event payloads — things that flow
+    through the ticker — live in pools. Allocate on cold start; recycle on every cycle.
+  </p>
+  <p>
+    <strong>Watch for:</strong> references escaping the pool. A symbol that ends up in a
+    bigwin presenter and isn't returned leaks. Use the <code>Disposable</code> pattern to
+    enforce return.
+  </p>
+</Docs>

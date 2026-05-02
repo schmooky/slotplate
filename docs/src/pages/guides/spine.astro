@@ -1,0 +1,76 @@
+---
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Spine symbols" description="Rigged skeleton animation for reel symbols, following the bonbon-hw pattern." eyebrow="How-to">
+  <p>
+    Spine is optional. Install it when a symbol needs rigged animation — skeletal
+    bones, blended tracks, per-symbol "idle → landing → win → bigwin" states. For
+    everything else, stick with sprites.
+  </p>
+
+  <h2>Install the peer dep</h2>
+  <pre><code>pnpm add @esotericsoftware/spine-pixi-v8</code></pre>
+
+  <h2>The two-class pattern</h2>
+  <p>
+    slotplate splits Spine handling into two classes, mirroring the bonbon-hw codebase:
+  </p>
+  <ul>
+    <li>
+      <strong><code>SpineReelSymbol</code></strong> — a dumb container that owns the
+      <code>Spine</code> instance's lifecycle (<code>onActivate</code>, <code>onDeactivate</code>,
+      <code>resize</code>). No animation logic; delegates to the player.
+    </li>
+    <li>
+      <strong><code>SymbolAnimationPlayer</code></strong> — given a symbol id and an
+      animation name (<code>'idle'</code>, <code>'landing'</code>, <code>'win'</code>, <code>'bigwin'</code>),
+      plays the right tracks on the Spine instance. The symbol-to-tracks mapping is
+      data — one file of configuration, not logic.
+    </li>
+  </ul>
+
+  <h2>The config</h2>
+  <pre><code>{`// src/config/spineAnimations.ts
+export const animations: SymbolAnimations = {
+  idle:    { default: ['idle'], wild: ['wild_idle'] },
+  landing: { default: ['landing'], wild: ['wild_landing'] },
+  win:     { default: ['win_small'], wild: ['wild_win', 'wild_glow'] },
+  bigwin:  { default: ['bigwin'] },
+  size:    { default: ['size_idle'] },
+};`}</code></pre>
+  <p>
+    Each animation maps <code>symbolId → tracks[]</code>. Tracks play in parallel —
+    so you can have a gameplay animation, a size pulse, and a glow overlay running
+    on three tracks at once.
+  </p>
+
+  <h2>Enabling the stub</h2>
+  <p>
+    The shipped <code>SpineReelSymbol.ts</code> is stubbed. Uncomment the import
+    and the <code>Spine.from(...)</code> call in the constructor, and implement the
+    <code>SymbolAnimationPlayer</code> body using <code>spine.state.setAnimation(...)</code>.
+    The bonbon-hw <code>SymbolAnimationPlayer</code> is a good concrete reference.
+  </p>
+
+  <h2>Per-symbol positioning</h2>
+  <p>
+    Sprite symbols anchor at <code>(0, 0)</code>. Spine skeletons center at origin.
+    That means <code>resize(w, h)</code> must set <code>spine.position = (w/2, h/2)</code>
+    and compute a scale that fits the skeleton's bounding box into the cell.
+    Easy to miss — <code>resize</code> runs on every symbol swap, so a one-time
+    constructor position won't cut it.
+  </p>
+
+  <Opinion>
+    Do not mix sprite and Spine code in one class. Use <code>SymbolFactory</code> to pick
+    per-id. Mixed classes become conditional bodies that are a maintenance trap.
+  </Opinion>
+
+  <h2>When to use Spine vs AnimatedSprite</h2>
+  <ul>
+    <li><strong>Spine:</strong> character-style rigs, complex blended states, skeletal-physics secondary motion.</li>
+    <li><strong>AnimatedSprite (Pixi):</strong> frame-by-frame loops. A blinking wild, a twinkling scatter. Smaller, simpler, no peer dep.</li>
+    <li><strong>GSAP tweens on a Sprite:</strong> shake, scale pulse, fade. The default for win animations.</li>
+  </ul>
+</Docs>

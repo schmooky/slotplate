@@ -1,0 +1,15 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Command" description="Phase handlers as dispatchable commands." eyebrow="Pattern">
+  <p><strong>Where:</strong> <code>src/flow/phases/*.ts</code>.</p>
+  <p>
+    <strong>The rule:</strong> each phase is a self-contained unit with <code>enter</code>,
+    <code>skip</code>, <code>exit</code>. They're commands: you dispatch one, it runs,
+    transitions to the next.
+  </p>
+  <p>
+    <strong>Why:</strong> phases are testable in isolation. You can also log/record phase
+    transitions for replay or telemetry.
+  </p>
+</Docs>

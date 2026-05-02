@@ -1,0 +1,102 @@
+---
+import DiagramFrame from '../../components/arch/DiagramFrame.astro';
+import SpinSequenceDiagram from '../../components/arch/SpinSequenceDiagram.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs
+  title="Spin lifecycle"
+  description="Phase-by-phase walkthrough of a round, with the sequence diagram as the anchor."
+  eyebrow="Architecture"
+>
+  <DiagramFrame title="End-to-end sequence" caption="Time flows top to bottom. Solid arrows = calls; dashed = returns.">
+    <SpinSequenceDiagram />
+  </DiagramFrame>
+
+  <h2>Phase-by-phase</h2>
+
+  <h3>idle</h3>
+  <p>
+    The resting state. <code>UIStore.spinning = false</code>, the spin button is enabled,
+    the stop button is disabled. <code>HUDPresenter</code>'s click handler on <code>#spin</code>
+    is live, waiting for user input.
+  </p>
+  <p>
+    <strong>Enter:</strong> sets UI flags. <br/>
+    <strong>Exit:</strong> nothing — idle holds no resources.
+  </p>
+
+  <h3>spin</h3>
+  <p>
+    Three things happen in <code>enter</code>, in this order:
+  </p>
+  <ol>
+    <li><code>BalanceStore.debitBet()</code> — optimistic UI update, not authoritative.</li>
+    <li><code>DataStore.clear()</code> — forget the previous round.</li>
+    <li>
+      <code>reels.startSpin()</code> and <code>network.spin({'{ bet }'})</code> launch in parallel
+      via <code>Promise.all</code>. The reels start rolling immediately; the network
+      promise is awaited.
+    </li>
+  </ol>
+  <p>
+    When <code>network.spin</code> resolves, the response is written to
+    <code>DataStore</code> and the FSM transitions to <code>stopSpin</code>.
+  </p>
+  <p>
+    <strong>Timing note:</strong> the reels usually haven't finished their wind-up
+    by the time the response arrives — which is fine. The reels keep rolling; the
+    <code>stopSpin</code> phase is what lands them.
+  </p>
+
+  <h3>stopSpin</h3>
+  <p>
+    Reads <code>DataStore.grid</code> and <code>DataStore.teasingReels</code>.
+    If the server directed teasers, they're passed to the engine first
+    (<code>reels.setAnticipation(teasers)</code>) so the specified reels slow
+    down before landing. Then <code>reels.stopWithResult(grid)</code> — this
+    is where <code>pixi-reels</code> lands each reel on its target symbols in
+    staggered sequence.
+  </p>
+  <p>
+    <code>skip()</code> calls <code>reels.forceStop()</code>, which jumps every
+    reel to its final position immediately. Used by Turbo / SuperTurbo speed
+    and by slam-stop. No state mutates — skipping is purely visual.
+  </p>
+
+  <h3>winShow</h3>
+  <p>
+    Reads <code>DataStore.winlines</code> and <code>totalWin</code>.
+  </p>
+  <ul>
+    <li>If there are no winlines, transitions to <code>idle</code> immediately.</li>
+    <li>
+      Otherwise: <code>reels.showWin(winlines)</code> (spotlight + per-symbol
+      win animation), <code>BalanceStore.credit(totalWin)</code>, then
+      <code>ctx.ticker.schedule(WIN_HOLD_MS, () =&gt; transition('idle'))</code>
+      to pause on the win for 1.5 seconds before returning to idle.
+    </li>
+  </ul>
+  <p>
+    <code>skip()</code> cancels the hold and transitions immediately. <code>exit()</code>
+    disposes the scheduled ticker handle — important if the FSM is torn down
+    mid-phase (scene change, page unload).
+  </p>
+
+  <h2>Key invariants</h2>
+  <ul>
+    <li>Exactly one phase is <em>in</em> at a time. <code>fsm.phase</code> returns its name.</li>
+    <li>Transitions are explicit: <code>await fsm.transition('next')</code>. No flag-based branching.</li>
+    <li>Phases don't call each other. Only the FSM transitions.</li>
+    <li>The FSM is the only writer to stores. Presenters and views read.</li>
+  </ul>
+
+  <h2>Adding a phase</h2>
+  <p>See <a href="/guides/add-phase/">Add a phase</a> for the end-to-end steps.</p>
+
+  <h2>Nested FSMs (bonus games)</h2>
+  <p>
+    Bonus games — "pick three chests", mini-slot, wheel-spin — nest as an inner FSM
+    inside a parent phase. Same <code>Phase</code> interface, same rules, own lifecycle.
+    See <a href="/guides/bonus/">Add a bonus game</a>.
+  </p>
+</Docs>

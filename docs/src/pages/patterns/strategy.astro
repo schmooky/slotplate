@@ -1,0 +1,15 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Strategy" description="Swappable algorithms — spin modes, reel behaviors." eyebrow="Pattern">
+  <p><strong>Where:</strong> <code>pixi-reels</code>' <code>SpinningMode</code> interface (Standard, Cascade, Immediate). Registered via <code>ReelSetBuilder</code>.</p>
+  <p>
+    <strong>The rule:</strong> pick an algorithm at construction, not at call time. Classic
+    cascade games choose <code>CascadeMode</code>; classic 5×3 games use <code>StandardMode</code>;
+    demos use <code>ImmediateMode</code>.
+  </p>
+  <p>
+    <strong>Don't:</strong> branch on <code>mode === 'cascade'</code> in 50 places. One
+    strategy, one implementation, one registration.
+  </p>
+</Docs>

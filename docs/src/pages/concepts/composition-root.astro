@@ -1,0 +1,45 @@
+---
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="The composition root" description="One file that wires everything. Grepable. Replaceable." eyebrow="Concept">
+  <p>
+    <code>src/composition.ts</code> is the only file in the project that says
+    <code>new Foo()</code> for a service. Every other file receives its dependencies.
+  </p>
+
+  <h2>The shape</h2>
+  <pre><code>{`export async function compose(host, hud) {
+  const container = new Container();
+
+  container.register('stores', () => new RootStore());
+  container.register('ticker', () => new GsapTicker());
+  container.register('network', () => new MockNetworkManager(...));
+  // ...
+
+  await scene.init(host);
+  const fsm = new FSM({ stores, ticker, network, reels, hud });
+  fsm.register(new IdlePhase());
+  fsm.register(new SpinPhase());
+  // ...
+
+  return { start: () => fsm.transition('idle'), dispose };
+}`}</code></pre>
+  <p>
+    All <code>new</code> calls happen here. Phase handlers, presenters, and stores receive
+    what they need via constructor arguments or the FSM context — they never reach for a global.
+  </p>
+
+  <h2>Anti-patterns this kills</h2>
+  <ul>
+    <li>"Let me just import the singleton here." — No singleton exists.</li>
+    <li>"I'll <code>new MyService()</code> inside this helper." — The helper takes it as a parameter.</li>
+    <li>"The service locator will find it." — The locator is only populated here; elsewhere it's read-only.</li>
+  </ul>
+
+  <Opinion>
+    There is exactly one composition root per app. <code>new</code> in a random component
+    is a future bug. Also a future merge conflict, because "where do I wire this?" has
+    one answer.
+  </Opinion>
+</Docs>

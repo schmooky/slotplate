@@ -1,0 +1,64 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Add a symbol" description="Adding a new reel symbol to a slotplate project." eyebrow="How-to">
+  <h2>Short version</h2>
+  <pre><code>/add-symbol Watermelon</code></pre>
+  <p>(In Claude Code. The slash command does the steps below.)</p>
+
+  <h2>Long version</h2>
+  <ol>
+    <li>
+      <strong>Add the texture.</strong> Drop the sprite in <code>public/assets/symbols/watermelon.png</code>,
+      or add it to your TexturePacker atlas.
+    </li>
+    <li>
+      <strong>Register in the asset bundle.</strong> In <code>composition.ts</code>, add the alias to
+      the asset bundle loaded before the main scene mounts.
+    </li>
+    <li>
+      <strong>Create the symbol class.</strong> <code>src/view/symbols/WatermelonSymbol.ts</code>:
+      <pre><code>{`export class WatermelonSymbol extends SpriteReelSymbol {
+  constructor() {
+    super('watermelon', Texture.from('watermelon'));
+  }
+}`}</code></pre>
+      Subclass <code>SpriteReelSymbol</code> only if you need custom win animation, particles,
+      or sub-sprites. For a simple sprite, reuse the base class directly from the factory.
+    </li>
+    <li>
+      <strong>Register in the factory.</strong> <code>SymbolFactory</code> picks a renderer per id.
+      Add <code>{`{ id: 'watermelon', renderer: 'sprite', textureAlias: 'watermelon' }`}</code>
+      to its definitions.
+    </li>
+    <li>
+      <strong>Add the id to <code>gameConfig.ts</code>.</strong> The <code>symbolIds</code> array
+      is the whitelist of what the server is allowed to send. An id not in this list means
+      the factory throws loud — which is intentional.
+    </li>
+    <li>
+      <strong>Test it.</strong> <code>tests/view/WatermelonSymbol.test.ts</code> — assert the
+      lifecycle (activate, resize, playWin, dispose) works without throwing.
+    </li>
+    <li>
+      <strong>Run:</strong> <code>pnpm typecheck && pnpm test && pnpm lint</code>.
+    </li>
+  </ol>
+
+  <h2>If it's a Spine symbol</h2>
+  <p>
+    Use <code>SpineReelSymbol</code> instead. See the
+    <a href="/guides/spine/">Spine symbols guide</a> for the peer-dep install, the
+    <code>SymbolAnimationPlayer</code> wiring, and the per-symbol animation config.
+    <code>SymbolFactory</code> picks per-id, so you can mix sprite and Spine symbols
+    in the same game.
+  </p>
+
+  <h2>Anti-patterns</h2>
+  <ul>
+    <li>Importing pixi-reels or pixi.js outside <code>view/</code> or <code>presenters/</code> — lint error.</li>
+    <li>Putting payout info on the symbol. The client doesn't know payouts.</li>
+    <li>Calling <code>setTimeout</code> for the win pulse. Use <code>gsap.to(this.scale, ...)</code>.</li>
+    <li>Scattering layout logic across constructor + <code>onActivate</code> + <code>resize</code>. Put it in <code>resize</code>; it runs on every swap anyway.</li>
+  </ul>
+</Docs>

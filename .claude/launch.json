@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hhg2-ref",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8765"],
+      "cwd": ".hhg2-ref",
+      "port": 8765
+    },
+    {
+      "name": "slotplate-dev",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--dir", "template", "dev", "--port", "5183", "--strictPort"],
+      "port": 5183
+    }
+  ]
+}

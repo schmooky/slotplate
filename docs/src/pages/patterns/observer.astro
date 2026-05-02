@@ -1,0 +1,18 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Observer" description="MobX reactions + typed event emitters." eyebrow="Pattern">
+  <p>
+    <strong>Where:</strong> MobX <code>autorun</code>/<code>reaction</code> for continuous state;
+    <code>pixi-reels</code>' <code>EventEmitter&lt;ReelSetEvents&gt;</code> for discrete domain events.
+  </p>
+  <p><strong>The rule:</strong></p>
+  <ul>
+    <li>Continuous state → MobX reaction.</li>
+    <li>Discrete event ("reel landed") → event emitter.</li>
+  </ul>
+  <p>
+    Both are observer patterns; pick the primitive that fits the shape of the data.
+    Reactions that fire every frame while reels spin are the wrong shape for "reel landed."
+  </p>
+</Docs>

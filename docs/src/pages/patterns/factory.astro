@@ -1,0 +1,15 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Factory" description="SymbolFactory picks renderer per id." eyebrow="Pattern">
+  <p><strong>Where:</strong> <code>src/view/symbols/SymbolFactory.ts</code>.</p>
+  <p>
+    <strong>The rule:</strong> given a symbol id, return the right <code>Container</code>
+    subclass (sprite, animated sprite, Spine). The factory reads per-id config; call
+    sites are agnostic.
+  </p>
+  <p>
+    <strong>Why:</strong> lets you mix sprite and Spine symbols in the same game. Extends
+    cleanly to new renderer types without touching the caller.
+  </p>
+</Docs>

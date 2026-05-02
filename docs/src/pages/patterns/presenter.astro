@@ -1,0 +1,14 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Presenter (MVP)" description="State → view, nothing more." eyebrow="Pattern">
+  <p><strong>Where:</strong> <code>src/presenters/</code>.</p>
+  <p>
+    <strong>The rule:</strong> observe state, translate into view calls, expose a narrow API
+    for the FSM to drive. Never decide timing. Never mutate state.
+  </p>
+  <p>
+    <strong>MVP vs MVVM:</strong> close cousins. slotplate uses presenters because they tend
+    to be thinner than ViewModels — no two-way binding, just observable read and view write.
+  </p>
+</Docs>

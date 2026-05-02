@@ -1,0 +1,8 @@
+packages:
+  - '.'
+  - 'docs'
+  # NOTE: `template/` is intentionally NOT a workspace member.
+  # It's the scaffold contents `create-slotplate` copies into a user's
+  # project — its lockfile and node_modules must stay independent of the
+  # root, otherwise `pnpm install` in the scaffolded output would resolve
+  # against this repo's hoisted store. See bin.js for the copy logic.

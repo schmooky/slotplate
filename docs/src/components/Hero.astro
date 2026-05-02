@@ -1,0 +1,57 @@
+---
+const marqueeTags = [
+  'FSM phases', 'MobX stores', 'pixi-reels', 'server-authoritative',
+  'GSAP ticker', 'no setTimeout', 'Spine wrappers', 'typed events',
+  'composition root', 'disposables', 'anticipation', 'slam-stop',
+  'bonus sub-FSM', 'llms.txt', 'agent-ready',
+];
+---
+<section class="relative overflow-hidden border-b border-border/60 pb-16 pt-24">
+  <div class="grid-bg absolute inset-0 opacity-60 pointer-events-none"></div>
+
+  <div class="container relative">
+    <div class="mx-auto max-w-3xl text-center">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
+        <span class="inline-block h-1.5 w-1.5 rounded-full bg-accent animate-pulse"></span>
+        v0.1 · MIT · client-only · agent-ready
+      </div>
+
+      <h1 class="text-balance text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl">
+        Slot clients<br />
+        <span class="gradient-text">that don't rot.</span>
+      </h1>
+
+      <p class="mx-auto mt-6 max-w-2xl text-balance text-lg text-muted-foreground">
+        An opinionated boilerplate for slot game clients on
+        <a href="https://github.com/schmooky/pixi-reels" class="text-primary underline-offset-4 hover:underline">pixi-reels</a>.
+        FSM-driven flow, MobX stores, GSAP timing, Pixi behind one presenter.
+        The server owns the math; the client renders what it's told.
+      </p>
+
+      <div class="mt-8 flex items-center justify-center gap-3 flex-wrap">
+        <a
+          href="/docs/quickstart/"
+          class="inline-flex h-11 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent px-6 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/30 transition-all hover:brightness-110 hover:-translate-y-[1px]"
+        >
+          npm create slotplate
+        </a>
+        <a
+          href="/architecture/"
+          class="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card/50 px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary/50"
+        >
+          See the architecture →
+        </a>
+      </div>
+    </div>
+
+    <div class="relative mt-14 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
+      <div class="inline-flex items-center gap-8 whitespace-nowrap animate-marquee py-2">
+        {[...marqueeTags, ...marqueeTags].map((t) => (
+          <span class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground/70">
+            <span class="text-primary/80">◆</span>{t}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

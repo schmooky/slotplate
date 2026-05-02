@@ -1,0 +1,130 @@
+---
+import ClientServerDiagram from '../../components/arch/ClientServerDiagram.astro';
+import DiagramFrame from '../../components/arch/DiagramFrame.astro';
+import TickerDiagram from '../../components/arch/TickerDiagram.astro';
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs
+  title="The 10 Principles"
+  description="Hard rules. Break them and the diff should not pass review."
+  eyebrow="Rules"
+>
+  <p>
+    These aren't suggestions. They're the load-bearing rules the architecture rests on.
+    Every layer, every file, every lint rule in slotplate points back to one of these.
+    Where possible we encode the rule in Biome so the codebase itself rejects violations.
+  </p>
+
+  <h2>1. The client does not evaluate</h2>
+  <p>
+    The paytable lives on the server. The win evaluator lives on the server. The RNG and
+    the reelstrips live on the server. The client sends a <code>SpinRequest</code> and
+    receives a <code>SpinResponse</code> with <code>grid</code>, <code>winlines</code>, and
+    <code>totalWin</code> already resolved. The client renders. That is the entire loop.
+  </p>
+  <DiagramFrame caption="No parallel math, no client-side fallback evaluator, no offline win recomputation. The server is authoritative.">
+    <ClientServerDiagram />
+  </DiagramFrame>
+  <p>
+    <strong>Why:</strong> two evaluators mean two sources of truth. One of them is wrong.
+    Finding out which in production, at 3am, with real money moving, is the bug you
+    do not want.
+  </p>
+  <p>
+    <strong>Enforced by:</strong> the <code>domain/</code> folder has no <code>evaluateWin</code>.
+    The template has no paytable JSON. If an agent tries to generate one, it has no place to wire it.
+  </p>
+
+  <h2>2. No <code>setTimeout</code> in game code</h2>
+  <p>
+    All scheduled work goes through <code>Ticker.schedule(ms, fn)</code> from
+    <code>src/infrastructure/timing.ts</code>. Under the hood it's <code>gsap.delayedCall</code>
+    on a GSAP ticker that's synced to Pixi's <code>app.ticker</code>.
+  </p>
+  <DiagramFrame caption="setTimeout runs on the platform clock. When Pixi pauses in a hidden tab, setTimeout keeps firing. That's a bug factory.">
+    <TickerDiagram />
+  </DiagramFrame>
+  <p>
+    <strong>Enforced by:</strong> Biome's <code>no-restricted-globals</code> rejects
+    <code>setTimeout</code> and <code>setInterval</code> in game code, with a message
+    pointing at the Ticker service.
+  </p>
+
+  <h2>3. Presenters don't decide <em>when</em></h2>
+  <p>
+    A presenter observes state, translates it into view calls, and exposes a narrow API for
+    the FSM to drive. It does not hold timers. It does not sequence animations across
+    multiple frames of game state. That's the phase's job.
+  </p>
+  <p>
+    <strong>Why:</strong> presenters are dumb — easy to test, easy to replace. The moment
+    a presenter owns timing, it becomes a miniature state machine, and you have two of
+    them. Two state machines are four times harder to reason about than one.
+  </p>
+
+  <h2>4. State mutates via actions only</h2>
+  <p>
+    MobX <code>@action</code>-wrapped methods are the only mutators. Views read; presenters read;
+    phases call actions. A view or presenter that writes directly to a store is a bug.
+  </p>
+
+  <h2>5. Disposable everything</h2>
+  <p>
+    Any class that allocates a ticker handle, event listener, or Pixi resource implements
+    <code>Disposable</code> and is torn down by its parent scene. Scene teardown cascades.
+  </p>
+  <p>
+    <strong>Why:</strong> slots run for hours. Tiny leaks compound. Resource-leak bugs are
+    usually invisible for the first week and lethal by the second.
+  </p>
+
+  <h2>6. Fail loud</h2>
+  <p>
+    No silent <code>catch {}</code>. No <code>as any</code> without a one-line comment
+    explaining <em>why this is the least-bad option</em>. No "fallback to a hidden default"
+    that masks a missing config. Throw with a message that names what's missing and who
+    should have provided it.
+  </p>
+  <Opinion>
+    Silent failures are the #1 way AI-written code rots in production. LLMs are trained on
+    a lot of catch-and-continue. Your lint and your review must push back.
+  </Opinion>
+
+  <h2>7. One composition root</h2>
+  <p>
+    <code>src/composition.ts</code> is the only file that instantiates services. Everything
+    else receives dependencies. If you find yourself writing <code>new SomeService(...)</code>
+    anywhere else, stop — pass it as a parameter instead.
+  </p>
+
+  <h2>8. <code>pixi-reels</code> lives behind one presenter</h2>
+  <p>
+    Only files in <code>src/view/</code> and <code>src/presenters/</code> may import
+    <code>pixi-reels</code> or <code>pixi.js</code>. The rest of the app talks to the view
+    through <code>ReelsPresenter</code>.
+  </p>
+  <p>
+    <strong>Enforced by:</strong> Biome's <code>no-restricted-imports</code> with a
+    pattern that catches any import of pixi-anything outside those two folders.
+  </p>
+
+  <h2>9. Every phase is a file</h2>
+  <p>
+    New FSM states go in <code>src/flow/phases/</code> and register in
+    <code>src/composition.ts</code>. Phases implement <code>Phase</code> with
+    <code>enter</code>, optional <code>skip</code>, optional <code>exit</code>. They're
+    testable without a canvas — see <code>tests/flow/SpinPhase.test.ts</code> for the shape.
+  </p>
+
+  <h2>10. Docs are for agents too</h2>
+  <p>
+    When you add a concept, add a docs page. <code>/llms.txt</code> and <code>/llms-full.txt</code>
+    regenerate on build. Agents read docs the same way humans do — make sure yours exist.
+  </p>
+  <Opinion>
+    If your repo isn't readable by an AI agent today, it won't be maintainable by one tomorrow —
+    and that's the cheap labor you'll want access to. Writing docs and rules for agents is
+    writing docs and rules for your future teammates.
+  </Opinion>
+</Docs>

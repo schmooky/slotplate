@@ -1,0 +1,13 @@
+---
+interface Props { title?: string }
+const { title = 'The slotplate opinion' } = Astro.props;
+---
+<aside class="opinion not-prose">
+  <div class="opinion-title flex items-center gap-2">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="5.5" fill="none" stroke="currentColor" stroke-width="1" /><path d="M 6 3 v 3.5 M 6 8.5 v 0.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" /></svg>
+    {title}
+  </div>
+  <div class="text-[15px] leading-relaxed text-foreground/90">
+    <slot />
+  </div>
+</aside>

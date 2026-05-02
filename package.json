@@ -1,22 +1,59 @@
 {
-  "name": "slotplate",
-  "version": "1.0.0",
-  "description": "",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "create-slotplate",
+  "version": "0.1.0",
+  "description": "Opinionated boilerplate for slot games built on pixi-reels.",
+  "type": "module",
+  "bin": {
+    "create-slotplate": "./bin.js"
   },
-  "workspaces": [
-    "games/*",
-    "packages/*"
+  "files": [
+    "bin.js",
+    "template",
+    "README.md"
   ],
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schmooky/slotplate.git"
+  },
+  "homepage": "https://slotplate.dev",
+  "bugs": {
+    "url": "https://github.com/schmooky/slotplate/issues"
+  },
+  "scripts": {
+    "dev": "pnpm --dir docs dev",
+    "build": "pnpm --dir docs build",
+    "preview": "pnpm --dir docs preview",
+    "docs:dev": "pnpm --dir docs dev",
+    "docs:build": "pnpm --dir docs build",
+    "docs:preview": "pnpm --dir docs preview",
+    "test:cli": "node ./bin.js /tmp/slotplate-test-$(date +%s) --yes",
+    "lint": "pnpm --dir docs lint",
+    "changeset": "changeset",
+    "changeset:status": "changeset status",
+    "version-packages": "changeset version && pnpm install --lockfile-only",
+    "release": "changeset publish",
+    "snapshot": "changeset version --snapshot \"${SNAPSHOT_TAG:-snapshot}\" && changeset publish --tag \"${SNAPSHOT_TAG:-snapshot}\" --no-git-tag"
+  },
+  "keywords": [
+    "slot",
+    "pixi",
+    "pixi-reels",
+    "boilerplate",
+    "casino",
+    "gamedev"
+  ],
+  "author": "slotplate contributors",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.18.2",
+  "dependencies": {
+    "prompts": "^2.4.2",
+    "kleur": "^4.1.5"
+  },
   "devDependencies": {
-    "@eslint/js": "^9.18.0",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^10.0.1",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0"
+    "@changesets/cli": "^2.27.10",
+    "@changesets/changelog-github": "^0.5.0"
   }
 }

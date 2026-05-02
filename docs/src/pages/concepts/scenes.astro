@@ -1,0 +1,33 @@
+---
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs title="Scenes" description="Pixi application lifecycle, one scene per screen." eyebrow="Concept">
+  <p>
+    A scene owns a Pixi <code>Application</code> and the root of its display tree.
+    slotplate ships one scene (<code>MainScene</code>). Games with splash screens or
+    bonus games add more.
+  </p>
+
+  <h2>Responsibilities</h2>
+  <ul>
+    <li>Initialize <code>Application</code> with the right resolution, antialias, background.</li>
+    <li>Sync GSAP to <code>app.ticker</code> via <code>syncGsapToPixi</code> — once, at boot.</li>
+    <li>Construct and own the <code>ReelsEngine</code>. Expose it via <code>createReelsEngine()</code>.</li>
+    <li><code>dispose()</code> destroys the app and all children.</li>
+  </ul>
+
+  <h2>Why scenes, not one root</h2>
+  <p>
+    Splash, main, bonus, free-spin-intro — each has its own display tree, assets, and
+    lifecycle. Rolling them into one <code>Application</code> leaks resources across
+    phases. Separate scenes with clear mount/unmount contracts are the smaller error
+    surface.
+  </p>
+
+  <Opinion>
+    Scenes are where the Pixi-specific gnarl lives. Keep them thin — if a scene has
+    more than ~150 lines of code that isn't asset loading, some of it probably belongs
+    in a presenter or overlay.
+  </Opinion>
+</Docs>

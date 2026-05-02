@@ -1,0 +1,87 @@
+---
+import DiagramFrame from '../../components/arch/DiagramFrame.astro';
+import TickerDiagram from '../../components/arch/TickerDiagram.astro';
+import Opinion from '../../components/Opinion.astro';
+import Docs from '../../layouts/Docs.astro';
+---
+<Docs
+  title="Timing (no setTimeout)"
+  description="Why game code never calls setTimeout — and what it calls instead."
+  eyebrow="Concept"
+>
+  <p>
+    Principle #2: game code never calls <code>setTimeout</code> or <code>setInterval</code>.
+    All scheduled work goes through <code>Ticker.schedule(ms, fn)</code> from
+    <code>src/infrastructure/timing.ts</code>.
+  </p>
+
+  <h2>The bug</h2>
+  <DiagramFrame caption="setTimeout keeps firing in hidden tabs. Pixi's ticker pauses. The two desync.">
+    <TickerDiagram />
+  </DiagramFrame>
+  <p>
+    The user switches tabs. Pixi's ticker pauses — <code>requestAnimationFrame</code> is
+    throttled or suspended by the browser. Good: the game freezes in place.
+  </p>
+  <p>
+    Except <code>setTimeout</code> doesn't pause. That win-show callback you queued with
+    <code>setTimeout(..., 1500)</code> fires while the reels haven't moved. Now the balance
+    updates before the animation plays. When the user switches back, you get a ghost
+    animation and (on a cascade game) a phase mismatch that crashes the FSM.
+  </p>
+
+  <h2>The fix</h2>
+  <p>
+    <code>gsap.delayedCall</code> runs on GSAP's ticker. slotplate syncs that ticker to
+    <code>app.ticker</code> at boot:
+  </p>
+  <pre><code>{`// src/infrastructure/timing.ts
+export function syncGsapToPixi(pixiTicker) {
+  gsap.ticker.remove(gsap.updateRoot);
+  pixiTicker.add(() => gsap.updateRoot(performance.now() / 1000));
+}`}</code></pre>
+  <p>
+    Now GSAP pauses when Pixi pauses. <code>Ticker.schedule</code> wraps
+    <code>gsap.delayedCall</code> and returns a <code>Disposable</code>:
+  </p>
+  <pre><code>{`schedule(delayMs: number, fn: () => void): Disposable {
+  const tween = gsap.delayedCall(delayMs / 1000, fn);
+  return { dispose: () => tween.kill() };
+}`}</code></pre>
+
+  <h2>Usage</h2>
+  <pre><code>{`// In a phase's enter():
+this.cancel = ctx.ticker.schedule(1500, () => {
+  ctx.fsm.transition('idle');
+});
+
+// In the phase's exit():
+this.cancel?.dispose();`}</code></pre>
+
+  <h2>Enforcement</h2>
+  <p>
+    <code>biome.json</code> declares <code>setTimeout</code> and <code>setInterval</code>
+    as restricted globals with a message pointing at <code>timing.ts</code>.
+    Lint will fail any PR that adds them.
+  </p>
+
+  <h2>What about Promises?</h2>
+  <ul>
+    <li>Promises that resolve on ticker events (reel landed, animation done) — <strong>fine</strong>.</li>
+    <li>Promises that resolve on wall-clock delay via <code>setTimeout</code> — <strong>same bug as raw setTimeout</strong>. Use the ticker.</li>
+  </ul>
+
+  <h2>What about network timeouts?</h2>
+  <p>
+    <code>AbortController</code> + <code>fetch</code>'s built-in timeout are infrastructure-layer
+    concerns. They deliberately run on wall-clock time — you want the request to fail
+    after N seconds of real time even if the tab is hidden. The rule is about <em>game</em>
+    timing (sequences, animations, debounces), not network.
+  </p>
+
+  <Opinion>
+    Game code never calls setTimeout. Not once. Not "just this time." Use the ticker.
+    Future you will thank present you the first time a tester reports a double-spin from
+    a backgrounded tab.
+  </Opinion>
+</Docs>
